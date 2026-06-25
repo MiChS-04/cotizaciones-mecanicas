@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotizador Automático</title>
+    <!-- Incluimos la librería para generar PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        /* Estilos del Formulario de entrada */
+        .form-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilos de la Vista Previa de la Cotización (Lo que será el PDF) */
+        .preview-section {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            min-height: 500px;
+        }
+        .invoice-box {
+            background: white;
+        }
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .company-details h2 {
+            margin: 0;
+            color: #007bff;
+        }
+        .invoice-title {
+            text-align: right;
+        }
+        .invoice-title h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+        }
+        .client-details {
+            margin-bottom: 20px;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        .client-details h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .totals {
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #007bff;
+        }
+        .terms {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        /* Responsive para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- SECCIÓN 1: FORMULARIO DE ENTRADA DE DATOS -->
+    <div class="form-section">
+        <h2>Generador de Cotización</h2>
+        <hr style="border: 1px solid #eee; margin-bottom: 20px;">
+        
+        <div class="form-group">
+            <label for="inputCliente">Nombre del Cliente / Empresa:</label>
+            <input type="text" id="inputCliente" value="Empresa ABC S.A.C." oninput="actualizarCotizacion()">
+        </div>
+        
+        <div class="form-group">
+            <label for="inputAtencion">Persona de Contacto (Atención a):</label>
+            <input type="text" id="inputAtencion" value="Ing. Juan Pérez" oninput="actualizarCotizacion()">
+        </div>
+
+        <div class="form-group">
+            <label for="inputConcepto">Descripción del Servicio / Trabajo:</label>
+            <textarea id="inputConcepto" rows="4" oninput="actualizarCotizacion()">Mantenimiento preventivo, diagnóstico de fallas, calibración y pruebas de hermeticidad en banco de pruebas.</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="inputPrecio">Precio Total (S/. o $):</label>
+            <input type="number" id="inputPrecio" value="1500" oninput="actualizarCotizacion()">
+        </div>
+
+        <button onclick="descargarPDF()">Descargar Cotización en PDF</button>
+    </div>
+
+    <!-- SECCIÓN 2: VISTA PREVIA (ESTO SE CONVERTIRÁ EN PDF) -->
+    <div class="preview-section" id="cotizacion-pdf">
+        <div class="invoice-box">
+            <div class="invoice-header">
+                <div class="company-details">
+                    <!-- Aquí irá el nombre o logo de tu emprendimiento -->
+                    <h2>Servicios Técnicos Especializados</h2>
+                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Soluciones Industriales y Mantenimiento</p>
+                </div>
+                <div class="invoice-title">
+                    <h1>COTIZACIÓN</h1>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; font-weight: bold; color: #777;" id="fechaActual"></p>
+                </div>
+            </div>
+
+            <div class="client-details">
+                <h3>Datos del Cliente:</h3>
+                <p style="margin: 4px 0;"><strong>Cliente:</strong> <span id="pdfCliente">Empresa ABC S.A.C.</span></p>
+                <p style="margin: 4px 0;"><strong>Atención:</strong> <span id="pdfAtencion">Ing. Juan Pérez</span></p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 70%;">Descripción del Servicio</th>
+                        <th style="width: 30%; text-align: right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="pdfConcepto" style="white-space: pre-line;">Mantenimiento preventivo, diagnóstico de fallas, calibración y pruebas de hermeticidad en banco de pruebas.</td>
+                        <td id="pdfPrecio" style="text-align: right; font-weight: bold;">1500.00</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="totals">
+                Total: <span id="pdfTotal">1500.00</span>
+            </div>
+
+            <div class="terms">
+                <strong>Condiciones Comerciales:</strong>
+                <p style="margin: 5px 0 0 0;">• Forma de pago: A tratar / Crédito según acuerdo.</p>
+                <p style="margin: 3px 0 0 0;">• Tiempo de ejecución: Inmediato tras la orden de servicio.</p>
+                <p style="margin: 3px 0 0 0;">• Validez de la oferta: 15 días calendario.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Colocar la fecha del día automáticamente al cargar la página
+    const fecha = new Date();
+    document.getElementById('fechaActual').innerText = `Fecha: ${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
+
+    // Función que actualiza la vista previa en tiempo real mientras escribes
+    function actualizarCotizacion() {
+        const cliente = document.getElementById('inputCliente').value;
+        const atencion = document.getElementById('inputAtencion').value;
+        const concepto = document.getElementById('inputConcepto').value;
+        const precio = parseFloat(document.getElementById('inputPrecio').value) || 0;
+
+        document.getElementById('pdfCliente').innerText = cliente;
+        document.getElementById('pdfAtencion').innerText = atencion;
+        document.getElementById('pdfConcepto').innerText = concepto;
+        
+        // Formatear el precio a dos decimales
+        const precioFormateado = precio.toFixed(2);
+        document.getElementById('pdfPrecio').innerText = precioFormateado;
+        document.getElementById('pdfTotal').innerText = precioFormateado;
+    }
+
+    // Función mágica que convierte el div de la vista previa en un archivo PDF
+    function descargarPDF() {
+        const elemento = document.getElementById('cotizacion-pdf');
+        const nombreCliente = document.getElementById('inputCliente').value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        
+        const opciones = {
+            margin:       10,
+            filename:     `cotizacion_${nombreCliente}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 }, // Mayor escala = mayor nitidez en el PDF
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Ejecuta la conversión y descarga automáticamente
+        html2pdf().set(opciones).from(elemento).save();
+    }
+</script>
+
+</body>
+</html>
