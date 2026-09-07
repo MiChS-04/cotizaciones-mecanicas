@@ -3,240 +3,326 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizador - Servicios Generales Kylian</title>
+  <title>Cotización - Servicios Generales Kylian</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: Arial, sans-serif;
     }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #eef2f5;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
+    .cotizacion-box {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
       padding: 30px;
-      color: #333;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
     }
-    .container {
-      max-width: 850px;
-      margin: 0 auto;
-      background: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    .header-table {
+      width: 100%;
+      margin-bottom: 20px;
+      border-collapse: collapse;
     }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 3px solid #0056b3;
-      padding-bottom: 15px;
-      margin-bottom: 25px;
-    }
-    .header-info h1 {
-      font-size: 24px;
-      color: #0056b3;
-      text-transform: uppercase;
-    }
-    .header-info p {
-      font-size: 13px;
-      color: #666;
+    .header-table td {
+      vertical-align: middle;
     }
     .logo-container img {
       max-height: 80px;
-      width: auto;
+      max-width: 200px;
     }
-    .form-row {
-      display: flex;
-      gap: 20px;
+    .empresa-info {
+      text-align: right;
+      font-size: 13px;
+      color: #333;
+    }
+    .empresa-info h2 {
+      color: #004085;
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+    .num-cotizacion {
+      font-size: 16px;
+      font-weight: bold;
+      color: #d9534f;
+      margin-top: 5px;
+    }
+    .section-title {
+      background-color: #004085;
+      color: white;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
       margin-bottom: 15px;
     }
     .form-group {
-      flex: 1;
       display: flex;
       flex-direction: column;
     }
-    .form-group.short {
-      max-width: 200px;
-    }
-    label {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 5px;
-      color: #444;
-    }
-    input[type="text"], 
-    input[type="date"], 
-    input[type="number"], 
-    textarea {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    input[type="text"]:focus, 
-    input[type="date"]:focus, 
-    input[type="number"]:focus, 
-    textarea:focus {
-      border-color: #0056b3;
-    }
-    .input-readonly {
-      background-color: #e9ecef;
+    .form-group label {
+      font-size: 12px;
       font-weight: bold;
-      color: #0056b3;
-      text-align: center;
+      margin-bottom: 3px;
     }
-    table {
+    .form-group input {
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+    .tabla-servicios {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
-      margin-bottom: 20px;
+      margin-top: 15px;
     }
-    table th, table td {
-      border: 1px solid #ddd;
-      padding: 10px;
+    .tabla-servicios th, .tabla-servicios td {
+      border: 1px solid #ccc;
+      padding: 8px;
       text-align: left;
+      font-size: 13px;
+    }
+    .tabla-servicios th {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    .tabla-servicios input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13px;
+    }
+    .btn-delete {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 3px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .totales-container {
+      width: 40%;
+      margin-left: auto;
+      margin-top: 15px;
+    }
+    .totales-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .totales-table td {
+      padding: 5px;
+      text-align: right;
+      font-size: 13px;
+    }
+    .totales-table td:first-child {
+      font-weight: bold;
+    }
+    .actions {
+      margin-top: 25px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
       font-size: 14px;
     }
-    table th {
-      background-color: #0056b3;
-      color: white;
-    }
-    .btn-container {
-      display: flex;
-      justify-content: flex-end;
-      gap: 15px;
-      margin-top: 20px;
-    }
-    button {
-      padding: 12px 20px;
-      font-size: 15px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .btn-submit {
-      background-color: #28a745;
-      color: white;
-    }
-    .btn-submit:hover {
-      background-color: #218838;
-    }
-    .btn-reset {
-      background-color: #dc3545;
-      color: white;
-    }
-    .btn-reset:hover {
-      background-color: #c82333;
+    .btn-add { background-color: #17a2b8; color: white; }
+    .btn-download { background-color: #28a745; color: white; }
+    .btn-add:hover { background-color: #138496; }
+    .btn-download:hover { background-color: #218838; }
+
+    /* Estilos de ocultación para imprimir en PDF */
+    @media print {
+      .actions, .btn-delete, .no-print {
+        display: none !important;
+      }
+      body {
+        background: white;
+        padding: 0;
+      }
+      .cotizacion-box {
+        box-shadow: none;
+        padding: 0;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="header">
-      <div class="logo-container">
-        <img id="pdfLogoImg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARwAAAC_CAYAAAAsC2MUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAP-lSURBVHhe7P13lCTXdecPft6LiDSV5b3tsl1VXV1d1d4AjQYaDe8dAQIkRVKkvJnRaOa3u7O7ZzT7OyPpN06UNCIlkZRET4IgPAnvuhtotDflvfcmq7Ky0kXEe_tHZHU3QEACJPLsLMV7TlZVRkZlvIh49xvXfO99QimlhRB8mGit37-Jn-X-P2_5-Y7np7-by1uvPsbV-2m0FnhD8PYRgNag0Qjh_dZoBCC09D4HtBAopdFKYds2kcg6CwtLzC8s0t0_wNjoOLOz80zNzjKzsMTEzAx2wkb6AliBIEJKXK0QQiM0oFz8AR-WZRDw-_EHAvhNH4YhMaXENAxMaSANic-yCPj9pFIphBDpayjQWqO1RmmNchwcx8V2bJRSKBQpx8ZxHOLJFLFkioTtYLsa5XpnLoXwTl5p0C6p2AoCKMgvoLK0jLLiIsrKSqipr6GpaTObKisoLswnNysDn89EGQJDCAxA6o0LBTp9rkjhvdcKUwqEvuq-CPFTd_Dyp1fNm_fv83HlnzPfPmje_v-zbFwDoX_Rzux_Z9GAdtNvBAjpbRagtEakFUChPLBBIJRAa0g6DrFEguVwmPGJCUaGR-jo7KGjs5fZ-TDzS2Fi8SQagRbed0opsEwDQwhMQ5KZlUlWdjbZOVnk5eSSFcqgID-PzMwQ2TnZZGZlEgpm4Pf5sEwLyzIxpEQIME0Tn2Wi3RRSaDzElKi0bioFrtIopXGVwrYdUnaSRCxCKpViPZ5gZW2dpZU1IpEokbV1IqtrrK6ssrocJhZdB6FJCQfHVeCAUBKtwNUa6TMozMumrKSAHe1baW9upKGumvotjWRlZhDy-_AZEhQgJEoItNDpq6iRWiMFgHfNr5Z_TAE-PlT8bOQXTS1_CTg_S_Hm9ZW__zHZ-Hxjf-Ft8Gwa0AiU9r7QVZqVWIKFhWV6unq4dLGTCxcu0dXbz1IkipImGhNDWriOxnFs_H6DgGkQlJAV8lO1qZTq2krKy0ooLiwkOysL0-_HCgYRloVtO7i2Q8q2SSZTJBNJUgmbRCKJnXJIpTwLxXU1QmvcVOyyVQMghERIgTRNLMuH6fdhWha-gJ-A3092RiZ-n0kw6FlShgESjascHMdhPR5jPRonHF5maTFMX_844-PTrK5GUEBKuazbNrZ2PWtFaaQLpoLsoJ-D-_fSuqWRHe2tNDXWUVCURzAzgJAiDdreJZYKD2wMD9Q_CEiuvnVX36YP2vfnLb9oavlLwPl5yUe5moKrdvRgxgMaQcp2icYSzMwsMjQyxstvHaOvf4iuzi7CK6tIaRAMhhDSwHEdUC4-S5KXm0lxURG1DQ3UVtewqbyUwrwcsrIy0NoltUvr6ij1v4/f-3rA_jNq387sP23E2A==" alt="Logo Kylian">
-      </div>
-      <div class="header-info">
-        <h1>Servicios Generales Kylian</h1>
-        <p>RUC: 10458796321 | Tel: +51 987 654 321</p>
-        <p>Email: contacto@servicioskylian.com</p>
-      </div>
-    </div>
+  <div class="cotizacion-box" id="cotizacionContent">
+    <table class="header-table">
+      <tr>
+        <td class="logo-container">
+          <img id="pdfLogoImg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARwAAAC_CAYAAAAsC2MUAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAP-lSURBVHhe7P13lCTXdecPft6LiDSV5b3tsl1VXV1d1d4AjQYaDe8dAQIkRVKkvJnRaOa3u7O7ZzT7OyPpN06UNCIlkZRET4IgPAnvuhtotDflvfcmq7Ky0kXEe_tHZHU3QEACJPLsLMV7TlZVRkZlvIh49xvXfO99QimlhRB8mGit37-Jn-X-P2_5-Y7np7-by1uvPsbV-2m0FnhD8PYRgNag0Qjh_dZoBCC09D4HtBAopdFKYds2kcg6CwtLzC8s0t0_wNjoOLOz80zNzjKzsMTEzAx2wkb6AliBIEJKXK0QQiM0oFz8AR-WZRDw-_EHAvhNH4YhMaXENAxMaSANic-yCPj9pFIphBDpayjQWqO1RmmNchwcx8V2bJRSKBQpx8ZxHOLJFLFkioTtYLsa5XpnLoXwTl5p0C6p2AoCKMgvoLK0jLLiIsrKSqipr6GpaTObKisoLswnNysDn89EGQJDCAxA6o0LBTp9rkjhvdcKUwqEvuq-CPFTd_Dyp1fNm_fv83HlnzPfPmje_v-zbFwDoX_Rzux_Z9GAdtNvBAjpbRagtEakFUChPLBBIJRAa0g6DrFEguVwmPGJCUaGR-jo7KGjs5fZ-TDzS2Fi8SQagRbed0opsEwDQwhMQ5KZlUlWdjbZOVnk5eSSFcqgID-PzMwQ2TnZZGZlEgpm4Pf5sEwLyzIxpEQIME0Tn2Wi3RRSaDzElKi0bioFrtIopXGVwrYdUnaSRCxCKpViPZ5gZW2dpZU1IpEokbV1IqtrrK6ssrocJhZdB6FJCQfHVeCAUBKtwNUa6TMozMumrKSAHe1baW9upKGumvotjWRlZhDy-_AZEhQgJEoItNDpq6iRWiMFgHfNr5Z_TAE-PlT8bOQXTS1_CTg_S_Hm9ZW__zHZ-Hxjf-Ft8Gwa0AiU9r7QVZqVWIKFhWV6unq4dLGTCxcu0dXbz1IkipImGhNDWriOxnFs_H6DgGkQlJAV8lO1qZTq2krKy0ooLiwkOysL0-_HCgYRloVtO7i2Q8q2SSZTJBNJUgmbRCKJnXJIpTwLxXU1QmvcVOyyVQMghERIgTRNLMuH6fdhWha-gJ-A3092RiZ-n0kw6FlShgESjascHMdhPR5jPRonHF5maTFMX_844-PTrK5GUEBKuazbNrZ2PWtFaaQLpoLsoJ-D-_fSuqWRHe2tNDXWUVCURzAzgJAiDdreJZYKD2wMD9Q_CEiuvnVX36YP2vfnLb9oavlLwPl5yUe5moKrdvRgxgMaQcp2icYSzMwsMjQyxstvHaOvf4iuzi7CK6tIaRAMhhDSwHEdUC4-S5KXm0lxURG1DQ3UVtewqbyUwrwcsrIy0NoltUvr6ij1v4/f-3rA_jNq387sP23E2A==" alt="Logo Kylian">
+        </td>
+        <td class="empresa-info">
+          <h2>Servicios Generales Kylian</h2>
+          <p>RUC: 10458796321</p>
+          <p>Teléfono: +51 987 654 321</p>
+          <div class="num-cotizacion" id="numCotizacionText">COTIZACIÓN N° 020</div>
+        </td>
+      </tr>
+    </table>
 
-    <div class="form-row">
-      <div class="form-group short">
-        <label for="inputNumero">N° Cotización:</label>
-        <input type="text" id="inputNumero" class="input-readonly" readonly>
+    <div class="section-title">DATOS DEL CLIENTE</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Cliente / Razón Social:</label>
+        <input type="text" id="cliente" placeholder="Nombre del cliente">
       </div>
-      <div class="form-group short">
-        <label for="fecha">Fecha:</label>
+      <div class="form-group">
+        <label>Fecha:</label>
         <input type="date" id="fecha">
       </div>
       <div class="form-group">
-        <label for="cliente">Cliente / Empresa:</label>
-        <input type="text" id="cliente" placeholder="Nombre completo o Razón Social">
+        <label>Dirección:</label>
+        <input type="text" id="direccion" placeholder="Dirección">
       </div>
-    </div>
-
-    <div class="form-row">
       <div class="form-group">
-        <label for="direccion">Dirección:</label>
-        <input type="text" id="direccion" placeholder="Dirección del cliente">
-      </div>
-      <div class="form-group short">
-        <label for="telefono">Teléfono:</label>
-        <input type="text" id="telefono" placeholder="Número de contacto">
+        <label>Teléfono:</label>
+        <input type="text" id="telefono" placeholder="Teléfono de contacto">
       </div>
     </div>
 
-    <table>
+    <div class="section-title">DETALLE DEL SERVICIO</div>
+    <table class="tabla-servicios" id="tablaDetalle">
       <thead>
         <tr>
-          <th>Descripción del Servicio</th>
-          <th style="width: 100px;">Cantidad</th>
-          <th style="width: 120px;">Precio Unit.</th>
-          <th style="width: 120px;">Total</th>
+          <th>Descripción</th>
+          <th style="width: 80px;">Cant.</th>
+          <th style="width: 110px;">P. Unit (S/)</th>
+          <th style="width: 110px;">Total (S/)</th>
+          <th class="no-print" style="width: 40px;"></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="cuerpoTabla">
         <tr>
-          <td><input type="text" style="width: 100%;" placeholder="Descripción del trabajo"></td>
-          <td><input type="number" style="width: 100%;" value="1"></td>
-          <td><input type="number" style="width: 100%;" placeholder="0.00"></td>
-          <td><input type="text" style="width: 100%;" class="input-readonly" value="S/ 0.00" readonly></td>
+          <td><input type="text" placeholder="Descripción del servicio"></td>
+          <td><input type="number" class="cant" value="1" min="1" oninput="calcularTotales()"></td>
+          <td><input type="number" class="precio" value="0.00" step="0.10" oninput="calcularTotales()"></td>
+          <td><input type="text" class="subtotal-item" value="0.00" readonly></td>
+          <td class="no-print"><button class="btn-delete" onclick="eliminarFila(this)">X</button></td>
         </tr>
       </tbody>
     </table>
 
-    <div class="btn-container">
-      <button class="btn-reset" onclick="reiniciarCorrelativo()">Resetear a N° 020</button>
-      <button class="btn-submit" onclick="generarCotizacion()">Generar Cotización</button>
+    <div class="actions no-print" style="justify-content: flex-start; margin-top: 10px;">
+      <button class="btn btn-add" onclick="agregarFila()">+ Agregar Servicio</button>
+    </div>
+
+    <div class="totales-container">
+      <table class="totales-table">
+        <tr>
+          <td>Subtotal:</td>
+          <td>S/ <span id="lblSubtotal">0.00</span></td>
+        </tr>
+        <tr>
+          <td>IGV (18%):</td>
+          <td>S/ <span id="lblIgv">0.00</span></td>
+        </tr>
+        <tr>
+          <td>Total:</td>
+          <td><strong>S/ <span id="lblTotal">0.00</span></strong></td>
+        </tr>
+      </table>
     </div>
   </div>
 
+  <div class="actions">
+    <button class="btn btn-download" onclick="descargarPDF()">Descargar PDF</button>
+  </div>
+
   <script>
-    // Inicialización del correlativo comenzando en 20 por defecto
     let numeroActual = parseInt(localStorage.getItem('numCotizacionKylian')) || 20;
 
-    // Colocar fecha actual por defecto
     document.getElementById('fecha').valueAsDate = new Date();
 
-    function actualizarNumeroInput() {
-      // Formato con ceros a la izquierda (ej: N° 020)
-      document.getElementById('inputNumero').value = 'N° ' + String(numeroActual).padStart(3, '0');
+    function actualizarNumero() {
+      const numFormatted = 'N° ' + String(numeroActual).padStart(3, '0');
+      document.getElementById('numCotizacionText').innerText = 'COTIZACIÓN ' + numFormatted;
     }
 
-    function generarCotizacion() {
-      const cliente = document.getElementById('cliente').value;
-      if (!cliente) {
-        alert('Por favor, ingrese el nombre del cliente.');
-        return;
+    function agregarFila() {
+      const tbody = document.getElementById('cuerpoTabla');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" placeholder="Descripción del servicio"></td>
+        <td><input type="number" class="cant" value="1" min="1" oninput="calcularTotales()"></td>
+        <td><input type="number" class="precio" value="0.00" step="0.10" oninput="calcularTotales()"></td>
+        <td><input type="text" class="subtotal-item" value="0.00" readonly></td>
+        <td class="no-print"><button class="btn-delete" onclick="eliminarFila(this)">X</button></td>
+      `;
+      tbody.appendChild(tr);
+      calcularTotales();
+    }
+
+    function eliminarFila(btn) {
+      const tbody = document.getElementById('cuerpoTabla');
+      if (tbody.children.length > 1) {
+        btn.closest('tr').remove();
+        calcularTotales();
+      } else {
+        alert('Debe mantener al menos una fila.');
       }
-
-      alert('Cotización ' + document.getElementById('inputNumero').value + ' generada con éxito para ' + cliente + '.');
-      
-      // Incrementar y guardar en LocalStorage para la siguiente cotización
-      numeroActual++;
-      localStorage.setItem('numCotizacionKylian', numeroActual);
-      actualizarNumeroInput();
     }
 
-    function reiniciarCorrelativo() {
-      if (confirm('¿Deseas reiniciar el contador a N° 020?')) {
-        numeroActual = 20;
+    function calcularTotales() {
+      const filas = document.querySelectorAll('#cuerpoTabla tr');
+      let subtotalGeneral = 0;
+
+      filas.forEach(fila => {
+        const cant = parseFloat(fila.querySelector('.cant').value) || 0;
+        const precio = parseFloat(fila.querySelector('.precio').value) || 0;
+        const totalItem = cant * precio;
+        fila.querySelector('.subtotal-item').value = totalItem.toFixed(2);
+        subtotalGeneral += totalItem;
+      });
+
+      const igv = subtotalGeneral * 0.18;
+      const total = subtotalGeneral + igv;
+
+      document.getElementById('lblSubtotal').innerText = subtotalGeneral.toFixed(2);
+      document.getElementById('lblIgv').innerText = igv.toFixed(2);
+      document.getElementById('lblTotal').innerText = total.toFixed(2);
+    }
+
+    function descargarPDF() {
+      const element = document.getElementById('cotizacionContent');
+      const opt = {
+        margin:       10,
+        filename:     `Cotizacion_${String(numeroActual).padStart(3, '0')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        numeroActual++;
         localStorage.setItem('numCotizacionKylian', numeroActual);
-        actualizarNumeroInput();
-      }
+        actualizarNumero();
+      });
     }
 
-    // Cargar número al abrir la página
-    actualizarNumeroInput();
+    actualizarNumero();
+    calcularTotales();
   </script>
-
 </body>
 </html>
