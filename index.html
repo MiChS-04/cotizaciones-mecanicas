@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizador Automático</title>
+    <title>Cotizador - Servicios Generales Kylian</title>
     <!-- Incluimos la librería para generar PDFs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -15,7 +15,7 @@
             color: #333;
         }
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -44,25 +44,61 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
-        button {
+        
+        /* Contenedor de ítems/servicios dinámicos */
+        .item-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .item-row input[type="text"] {
+            flex: 2;
+        }
+        .item-row input[type="number"] {
+            flex: 1;
+        }
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-add {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        .btn-download {
             background-color: #007bff;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 15px;
             font-size: 16px;
             border-radius: 4px;
             cursor: pointer;
             width: 100%;
             font-weight: bold;
+            margin-top: 10px;
         }
-        button:hover {
+        .btn-download:hover {
             background-color: #0056b3;
         }
 
         /* Estilos de la Vista Previa de la Cotización (Lo que será el PDF) */
         .preview-section {
             background: white;
-            padding: 40px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             min-height: 500px;
@@ -80,13 +116,14 @@
         .company-details h2 {
             margin: 0;
             color: #007bff;
+            font-size: 20px;
         }
         .invoice-title {
             text-align: right;
         }
         .invoice-title h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 22px;
             color: #333;
         }
         .client-details {
@@ -97,7 +134,7 @@
         }
         .client-details h3 {
             margin: 0 0 8px 0;
-            font-size: 16px;
+            font-size: 15px;
             color: #555;
         }
         table {
@@ -108,23 +145,41 @@
         table th {
             background-color: #007bff;
             color: white;
-            padding: 10px;
+            padding: 8px 10px;
             text-align: left;
+            font-size: 13px;
         }
         table td {
-            padding: 10px;
+            padding: 8px 10px;
             border-bottom: 1px solid #ddd;
+            font-size: 13px;
         }
-        .totals {
+        .totals-table {
+            width: 50%;
+            margin-left: auto;
+            margin-bottom: 10px;
+        }
+        .totals-table td {
+            padding: 4px 8px;
+            border: none;
+            font-size: 13px;
+        }
+        .totals-table td.label {
             text-align: right;
-            font-size: 18px;
+            font-weight: 600;
+        }
+        .totals-table td.value {
+            text-align: right;
+        }
+        .totals-table tr.grand-total td {
             font-weight: bold;
-            margin-top: 10px;
+            font-size: 16px;
             color: #007bff;
+            border-top: 2px solid #007bff;
         }
         .terms {
-            margin-top: 40px;
-            font-size: 12px;
+            margin-top: 30px;
+            font-size: 11px;
             color: #777;
             border-top: 1px solid #eee;
             padding-top: 10px;
@@ -158,30 +213,36 @@
         </div>
 
         <div class="form-group">
-            <label for="inputConcepto">Descripción del Servicio / Trabajo:</label>
-            <textarea id="inputConcepto" rows="4" oninput="actualizarCotizacion()">Mantenimiento preventivo, diagnóstico de fallas, calibración y pruebas de hermeticidad en banco de pruebas.</textarea>
+            <label>Servicios / Ítems Cotizados:</label>
+            <div id="itemsContainer">
+                <div class="item-row">
+                    <input type="text" class="item-desc" placeholder="Descripción del servicio 1" value="Mantenimiento preventivo de válvulas" oninput="actualizarCotizacion()">
+                    <input type="number" class="item-price" placeholder="Precio (S/.)" value="1200" oninput="actualizarCotizacion()">
+                    <button class="btn-remove" onclick="eliminarFila(this)">X</button>
+                </div>
+                <div class="item-row">
+                    <input type="text" class="item-desc" placeholder="Descripción del servicio 2" value="Calibración y pruebas hidrostáticas" oninput="actualizarCotizacion()">
+                    <input type="number" class="item-price" placeholder="Precio (S/.)" value="300" oninput="actualizarCotizacion()">
+                    <button class="btn-remove" onclick="eliminarFila(this)">X</button>
+                </div>
+            </div>
+            <button class="btn-add" onclick="agregarFila()">+ Agregar Servicio</button>
         </div>
 
-        <div class="form-group">
-            <label for="inputPrecio">Precio Total (S/.):</label>
-            <input type="number" id="inputPrecio" value="1500" oninput="actualizarCotizacion()">
-        </div>
-
-        <button onclick="descargarPDF()">Descargar Cotización en PDF</button>
+        <button class="btn-download" onclick="descargarPDF()">Descargar Cotización en PDF</button>
     </div>
 
-    <!-- SECCIÓN 2: VISTA PREVIA (ESTO SE CONVERTIRÁ EN PDF) -->
+    <!-- SECCIÓN 2: VISTA PREVIA (SE CONVIERTE EN PDF) -->
     <div class="preview-section" id="cotizacion-pdf">
         <div class="invoice-box">
             <div class="invoice-header">
                 <div class="company-details">
-                    <!-- Aquí irá el nombre o logo de tu emprendimiento -->
-                    <h2>Servicios Generales Kilyam</h2>
-                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">Mecanica y Matenimiento en General</p>
+                    <h2>Servicios Generales Kylian</h2>
+                    <p style="margin: 4px 0 0 0; font-size: 12px; color: #666;">Mecánica y Mantenimiento en General</p>
                 </div>
                 <div class="invoice-title">
                     <h1>COTIZACIÓN</h1>
-                    <p style="margin: 5px 0 0 0; font-size: 14px; font-weight: bold; color: #777;" id="fechaActual"></p>
+                    <p style="margin: 4px 0 0 0; font-size: 13px; font-weight: bold; color: #777;" id="fechaActual"></p>
                 </div>
             </div>
 
@@ -195,26 +256,34 @@
                 <thead>
                     <tr>
                         <th style="width: 70%;">Descripción del Servicio</th>
-                        <th style="width: 30%; text-align: right;">Total</th>
+                        <th style="width: 30%; text-align: right;">Total (S/.)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td id="pdfConcepto" style="white-space: pre-line;">Mantenimiento preventivo, diagnóstico de fallas, calibración y pruebas de hermeticidad en banco de pruebas.</td>
-                        <td id="pdfPrecio" style="text-align: right; font-weight: bold;">1500.00</td>
-                    </tr>
+                <tbody id="pdfTableBody">
+                    <!-- Las filas se generan dinámicamente -->
                 </tbody>
             </table>
 
-            <div class="totals">
-                Total: <span id="pdfTotal">1500.00</span>
-            </div>
+            <table class="totals-table">
+                <tr>
+                    <td class="label">Subtotal:</td>
+                    <td class="value">S/. <span id="pdfSubtotal">0.00</span></td>
+                </tr>
+                <tr>
+                    <td class="label">IGV (18%):</td>
+                    <td class="value">S/. <span id="pdfIgv">0.00</span></td>
+                </tr>
+                <tr class="grand-total">
+                    <td class="label">Total:</td>
+                    <td class="value">S/. <span id="pdfTotal">0.00</span></td>
+                </tr>
+            </table>
 
             <div class="terms">
                 <strong>Condiciones Comerciales:</strong>
-                <p style="margin: 5px 0 0 0;">• Forma de pago: A tratar / Crédito según acuerdo.</p>
-                <p style="margin: 3px 0 0 0;">• Tiempo de ejecución: Inmediato tras la orden de servicio.</p>
-                <p style="margin: 3px 0 0 0;">• Validez de la oferta: 15 días calendario.</p>
+                <p style="margin: 4px 0 0 0;">• Forma de pago: A tratar / Según acuerdo comercial.</p>
+                <p style="margin: 2px 0 0 0;">• Tiempo de ejecución: Inmediato tras recepción de la orden de servicio.</p>
+                <p style="margin: 2px 0 0 0;">• Validez de la oferta: 15 días calendario.</p>
             </div>
         </div>
     </div>
@@ -222,28 +291,70 @@
 </div>
 
 <script>
-    // Colocar la fecha del día automáticamente al cargar la página
+    // Colocar fecha actual
     const fecha = new Date();
     document.getElementById('fechaActual').innerText = `Fecha: ${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
 
-    // Función que actualiza la vista previa en tiempo real mientras escribes
+    // Agregar nueva fila de servicio
+    function agregarFila() {
+        const container = document.getElementById('itemsContainer');
+        const div = document.createElement('div');
+        div.className = 'item-row';
+        div.innerHTML = `
+            <input type="text" class="item-desc" placeholder="Descripción del servicio" oninput="actualizarCotizacion()">
+            <input type="number" class="item-price" placeholder="Precio (S/.)" oninput="actualizarCotizacion()">
+            <button class="btn-remove" onclick="eliminarFila(this)">X</button>
+        `;
+        container.appendChild(div);
+        actualizarCotizacion();
+    }
+
+    // Eliminar fila
+    function eliminarFila(btn) {
+        btn.parentElement.remove();
+        actualizarCotizacion();
+    }
+
+    // Actualizar vista previa y calcular totales automáticamente
     function actualizarCotizacion() {
         const cliente = document.getElementById('inputCliente').value;
         const atencion = document.getElementById('inputAtencion').value;
-        const concepto = document.getElementById('inputConcepto').value;
-        const precio = parseFloat(document.getElementById('inputPrecio').value) || 0;
 
         document.getElementById('pdfCliente').innerText = cliente;
         document.getElementById('pdfAtencion').innerText = atencion;
-        document.getElementById('pdfConcepto').innerText = concepto;
-        
-        // Formatear el precio a dos decimales
-        const precioFormateado = precio.toFixed(2);
-        document.getElementById('pdfPrecio').innerText = precioFormateado;
-        document.getElementById('pdfTotal').innerText = precioFormateado;
+
+        const descs = document.querySelectorAll('.item-desc');
+        const prices = document.querySelectorAll('.item-price');
+        const pdfTableBody = document.getElementById('pdfTableBody');
+
+        pdfTableBody.innerHTML = '';
+        let subtotal = 0;
+
+        for (let i = 0; i < descs.length; i++) {
+            const desc = descs[i].value || '—';
+            const price = parseFloat(prices[i].value) || 0;
+            subtotal += price;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${desc}</td>
+                <td style="text-align: right;">${price.toFixed(2)}</td>
+            `;
+            pdfTableBody.appendChild(tr);
+        }
+
+        const igv = subtotal * 0.18;
+        const total = subtotal + igv;
+
+        document.getElementById('pdfSubtotal').innerText = subtotal.toFixed(2);
+        document.getElementById('pdfIgv').innerText = igv.toFixed(2);
+        document.getElementById('pdfTotal').innerText = total.toFixed(2);
     }
 
-    // Función mágica que convierte el div de la vista previa en un archivo PDF
+    // Inicializar al cargar
+    actualizarCotizacion();
+
+    // Descargar PDF
     function descargarPDF() {
         const elemento = document.getElementById('cotizacion-pdf');
         const nombreCliente = document.getElementById('inputCliente').value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -252,11 +363,10 @@
             margin:       10,
             filename:     `cotizacion_${nombreCliente}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 }, // Mayor escala = mayor nitidez en el PDF
+            html2canvas:  { scale: 2 },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        // Ejecuta la conversión y descarga automáticamente
         html2pdf().set(opciones).from(elemento).save();
     }
 </script>
