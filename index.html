@@ -249,26 +249,31 @@
             display: table-cell;
             text-align: center;
             vertical-align: middle;
-            padding: 2px 4px;
+            padding: 2px;
         }
         .brand-badge-box {
             border: 1px solid #e0e0e0;
             border-radius: 4px;
-            padding: 4px 2px;
-            background: #fafafa;
+            padding: 6px 2px 4px 2px;
+            background: #fdfdfd;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .brand-badge-box img {
-            max-width: 32px;
-            max-height: 20px;
-            object-fit: contain;
+        .brand-badge-box svg {
+            width: 26px;
+            height: 20px;
             display: block;
             margin: 0 auto 2px auto;
         }
         .brand-badge-box span {
             display: block;
-            font-size: 7.5px;
+            font-size: 7px;
             font-weight: bold;
-            color: #333;
+            color: #222;
+            line-height: 1;
         }
 
         @media print {
@@ -290,7 +295,7 @@
             <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 15px;">
             
             <div class="form-group">
-                <label for="inputLogo">Logo de Empresa (Se guarda permanentemente):</label>
+                <label for="inputLogo">Logo de Empresa (Se guarda automáticamente):</label>
                 <input type="file" id="inputLogo" accept="image/*" onchange="cargarLogo(event)">
                 <button id="btnRemoveLogo" class="btn-delete-logo" onclick="borrarLogoGuardado()" style="display:none;">Quitar Logo Guardado</button>
             </div>
@@ -401,61 +406,70 @@
                 <div>• Validez de la oferta: 15 días calendario.</div>
             </div>
 
-            <!-- Pie con Logos Multimarca Claros con Imagen y Nombre -->
+            <!-- Pie con Logos Multimarca SVG Incrustados Directamente -->
             <div class="footer-brands">
                 <p>ESPECIALISTAS EN ATENCIÓN Y MANTENIMIENTO MULTIMARCA</p>
                 <div class="brand-logos-grid">
+                    <!-- Toyota -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/toyota/eb000d" alt="Toyota">
+                            <svg viewBox="0 0 24 24" fill="#eb000d"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c3.87 0 7 2.24 7 5s-3.13 5-7 5-7-2.24-7-5 3.13-5 7-5zm0 1.5c-2.49 0-4.5 1.12-4.5 2.5S9.51 11.5 12 11.5s4.5-1.12 4.5-2.5S14.49 6.5 12 6.5zm-1.5 4.5h3v7h-3v-7z"/></svg>
                             <span>TOYOTA</span>
                         </div>
                     </div>
+                    <!-- Hyundai -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/hyundai/002c5f" alt="Hyundai">
+                            <svg viewBox="0 0 24 24" fill="#002c5f"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-4 5h2v4.5l4-3V7h2v10h-2v-4.5l-4 3V17H8V7z"/></svg>
                             <span>HYUNDAI</span>
                         </div>
                     </div>
+                    <!-- Nissan -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/nissan/000000" alt="Nissan">
+                            <svg viewBox="0 0 24 24" fill="#111111"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c3.87 0 7 3.13 7 7s-3.13 7-7 7-7-3.13-7-7 3.13-7 7-7zm-8 6h16v2H4v-2z"/></svg>
                             <span>NISSAN</span>
                         </div>
                     </div>
+                    <!-- Chevrolet -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/chevrolet/cd9834" alt="Chevrolet">
+                            <svg viewBox="0 0 24 24" fill="#cd9834"><path d="M19 9h-4V5H9v4H5v6h4v4h6v-4h4V9z"/></svg>
                             <span>CHEVROLET</span>
                         </div>
                     </div>
+                    <!-- Kia -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/kia/05141f" alt="Kia">
+                            <svg viewBox="0 0 24 24" fill="#05141f"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-5 6h2v3.5L11.5 8H14l-3 4.5 3.5 5.5h-2.5L9.5 13.5 9 14.2V18H7V8zm9 0h2v10h-2V8z"/></svg>
                             <span>KIA</span>
                         </div>
                     </div>
+                    <!-- Ford -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/ford/102b72" alt="Ford">
+                            <svg viewBox="0 0 24 24" fill="#102b72"><path d="M12 4c-5.52 0-10 3.58-10 8s4.48 8 10 8 10-3.58 10-8-4.48-8-10-8zm-1 12c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>
                             <span>FORD</span>
                         </div>
                     </div>
+                    <!-- Volkswagen -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/volkswagen/001e50" alt="Volkswagen">
+                            <svg viewBox="0 0 24 24" fill="#001e50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 2c4.41 0 8 3.59 8 8s-3.59 8-8 8-8-3.59-8-8 3.59-8 8-8zm-3.5 4l2.5 7h2l2.5-7h-2l-1.5 4.5L10.5 8h-2z"/></svg>
                             <span>VOLKSWAGEN</span>
                         </div>
                     </div>
+                    <!-- Isuzu -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/isuzu/e21b22" alt="Isuzu">
+                            <svg viewBox="0 0 24 24" fill="#e21b22"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-4 5h2v10H8V7zm5 0h3c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2h-1v4h-2V7zm2 4h1V9h-1v2z"/></svg>
                             <span>ISUZU</span>
                         </div>
                     </div>
+                    <!-- Mitsubishi -->
                     <div class="brand-cell">
                         <div class="brand-badge-box">
-                            <img src="https://cdn.simpleicons.org/mitsubishi/e60012" alt="Mitsubishi">
+                            <svg viewBox="0 0 24 24" fill="#e60012"><path d="M12 2l-3 5h6l-3-5zm-4 7l-5 8h6l3-5-4-3zm8 0l-4 3 3 5h6l-5-8z"/></svg>
                             <span>MITSUBISHI</span>
                         </div>
                     </div>
@@ -468,7 +482,7 @@
 </div>
 
 <script>
-    // 1. Cargar Correlativo Guardado
+    // Correlativo guardado
     let numeroActual = parseInt(localStorage.getItem('numCotizacionKylian')) || 1;
     document.getElementById('inputNumero').value = numeroActual;
 
@@ -476,7 +490,7 @@
     const fecha = new Date();
     document.getElementById('fechaActual').innerText = `Fecha: ${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
 
-    // 2. Cargar Logo Guardado en LocalStorage
+    // Cargar Logo Guardado en LocalStorage
     function inicializarLogoGuardado() {
         const savedLogo = localStorage.getItem('logoEmpresaKylian');
         const img = document.getElementById('pdfLogoImg');
@@ -498,7 +512,6 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const base64Data = e.target.result;
-                // Guardar en el navegador
                 localStorage.setItem('logoEmpresaKylian', base64Data);
                 inicializarLogoGuardado();
             }
@@ -570,7 +583,7 @@
 
     actualizarCotizacion();
 
-    // Descarga fluida sin cortes
+    // Descarga de PDF
     function descargarPDF() {
         const elemento = document.getElementById('cotizacion-pdf');
         const numCot = String(document.getElementById('inputNumero').value).padStart(3, '0');
