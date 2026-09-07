@@ -230,7 +230,7 @@
       padding-left: 15px;
     }
 
-    /* FRANJA INFERIOR MARCAS (CANVAS DIRECTO COMPATIBLE CON PDF) */
+    /* FRANJA INFERIOR MARCAS */
     .footer-brands-section {
       border-top: 2px solid #0d47a1;
       padding-top: 12px;
@@ -377,7 +377,7 @@
         </ul>
       </div>
 
-      <!-- FRANJA INFERIOR MARCAS -->
+      <!-- FRANJA INFERIOR MARCAS (MANTENIDA) -->
       <div class="footer-brands-section">
         <div class="footer-brands-title">Especialistas en Atención y Mantenimiento Multimarca</div>
         <div class="brands-grid">
@@ -439,41 +439,41 @@
 
     // DIBUJO DE LOGOS EN CANVAS NATIVO
     function renderizarLogos() {
-      // 1. LOGO PRINCIPAL DEL TALLER (KYLIAN)
+      // 1. LOGO PRINCIPAL DEL TALLER (KYLIAN) - CORREGIDO PARA QUE APAREZCA SIEMPRE
       const cK = document.getElementById('canvasKylian');
-      const ctxK = cK.getContext('2d');
-      
-      // Fondo Azul
-      ctxK.fillStyle = '#0f4c81';
-      ctxK.beginPath();
-      ctxK.roundRect(0, 0, 180, 70, 8);
-      ctxK.fill();
+      if (cK) {
+        const ctxK = cK.getContext('2d');
+        
+        // Fondo Azul con bordes rectos (100% compatible)
+        ctxK.fillStyle = '#0f4c81';
+        ctxK.fillRect(0, 0, 180, 70);
 
-      // Círculo dentado/puntos amarillos
-      ctxK.strokeStyle = '#f1c40f';
-      ctxK.lineWidth = 2.5;
-      ctxK.setLineDash([4, 3]);
-      ctxK.beginPath();
-      ctxK.arc(36, 35, 18, 0, Math.PI * 2);
-      ctxK.stroke();
-      ctxK.setLineDash([]);
+        // Círculo dentado/puntos amarillos
+        ctxK.strokeStyle = '#f1c40f';
+        ctxK.lineWidth = 2.5;
+        ctxK.setLineDash([4, 3]);
+        ctxK.beginPath();
+        ctxK.arc(36, 35, 18, 0, Math.PI * 2);
+        ctxK.stroke();
+        ctxK.setLineDash([]);
 
-      // Cruz / MIRA CELESTE EN EL CENTRO
-      ctxK.strokeStyle = '#00d2ff';
-      ctxK.lineWidth = 3.5;
-      ctxK.beginPath();
-      ctxK.moveTo(27, 35); ctxK.lineTo(45, 35);
-      ctxK.moveTo(36, 26); ctxK.lineTo(36, 44);
-      ctxK.stroke();
+        // Cruz / MIRA CELESTE EN EL CENTRO
+        ctxK.strokeStyle = '#00d2ff';
+        ctxK.lineWidth = 3.5;
+        ctxK.beginPath();
+        ctxK.moveTo(27, 35); ctxK.lineTo(45, 35);
+        ctxK.moveTo(36, 26); ctxK.lineTo(36, 44);
+        ctxK.stroke();
 
-      // Textos
-      ctxK.fillStyle = '#ffffff';
-      ctxK.font = 'bold 11px Arial';
-      ctxK.fillText('SERVICIOS', 65, 31);
-      
-      ctxK.fillStyle = '#f1c40f';
-      ctxK.font = 'bold 17px Arial';
-      ctxK.fillText('KYLIAN', 65, 50);
+        // Textos Taller
+        ctxK.fillStyle = '#ffffff';
+        ctxK.font = 'bold 11px Arial';
+        ctxK.fillText('SERVICIOS', 65, 31);
+        
+        ctxK.fillStyle = '#f1c40f';
+        ctxK.font = 'bold 17px Arial';
+        ctxK.fillText('KYLIAN', 65, 50);
+      }
 
       // 2. LOGOS MULTIMARCA
       // Toyota
