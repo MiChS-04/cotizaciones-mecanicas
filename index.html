@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cotizador - Servicios Generales Kylian</title>
-    <!-- Incluimos la librería para generar PDFs -->
+    <!-- Librería para generar PDFs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
@@ -21,7 +21,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
-        /* Estilos del Formulario de entrada */
+        /* Estilos del Formulario */
         .form-section {
             background: white;
             padding: 20px;
@@ -45,7 +45,7 @@
             box-sizing: border-box;
         }
         
-        /* Contenedor de ítems/servicios dinámicos */
+        /* Contenedor de ítems/servicios */
         .item-row {
             display: flex;
             gap: 10px;
@@ -95,7 +95,7 @@
             background-color: #0056b3;
         }
 
-        /* Estilos de la Vista Previa de la Cotización (Lo que será el PDF) */
+        /* Estilos de la Vista Previa (PDF) */
         .preview-section {
             background: white;
             padding: 30px;
@@ -123,8 +123,14 @@
         }
         .invoice-title h1 {
             margin: 0;
-            font-size: 22px;
+            font-size: 20px;
             color: #333;
+        }
+        .invoice-title .num-cotizacion {
+            font-size: 16px;
+            font-weight: bold;
+            color: #007bff;
+            margin: 2px 0 0 0;
         }
         .client-details {
             margin-bottom: 20px;
@@ -185,7 +191,6 @@
             padding-top: 10px;
         }
 
-        /* Responsive para pantallas pequeñas */
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
@@ -197,11 +202,16 @@
 
 <div class="container">
     
-    <!-- SECCIÓN 1: FORMULARIO DE ENTRADA DE DATOS -->
+    <!-- SECCIÓN 1: FORMULARIO -->
     <div class="form-section">
         <h2>Generador de Cotización</h2>
         <hr style="border: 1px solid #eee; margin-bottom: 20px;">
         
+        <div class="form-group">
+            <label for="inputNumero">N° de Cotización:</label>
+            <input type="number" id="inputNumero" value="1" oninput="actualizarCotizacion()">
+        </div>
+
         <div class="form-group">
             <label for="inputCliente">Nombre del Cliente / Empresa:</label>
             <input type="text" id="inputCliente" value="Empresa ABC S.A.C." oninput="actualizarCotizacion()">
@@ -232,7 +242,7 @@
         <button class="btn-download" onclick="descargarPDF()">Descargar Cotización en PDF</button>
     </div>
 
-    <!-- SECCIÓN 2: VISTA PREVIA (SE CONVIERTE EN PDF) -->
+    <!-- SECCIÓN 2: VISTA PREVIA (PDF) -->
     <div class="preview-section" id="cotizacion-pdf">
         <div class="invoice-box">
             <div class="invoice-header">
@@ -242,7 +252,8 @@
                 </div>
                 <div class="invoice-title">
                     <h1>COTIZACIÓN</h1>
-                    <p style="margin: 4px 0 0 0; font-size: 13px; font-weight: bold; color: #777;" id="fechaActual"></p>
+                    <div class="num-cotizacion" id="pdfNumero">N° 001</div>
+                    <p style="margin: 4px 0 0 0; font-size: 12px; font-weight: bold; color: #777;" id="fechaActual"></p>
                 </div>
             </div>
 
@@ -260,7 +271,7 @@
                     </tr>
                 </thead>
                 <tbody id="pdfTableBody">
-                    <!-- Las filas se generan dinámicamente -->
+                    <!-- Filas dinámicas -->
                 </tbody>
             </table>
 
@@ -291,6 +302,10 @@
 </div>
 
 <script>
+    // Recuperar el número correlativo guardado en la memoria local del navegador
+    let numeroActual = parseInt(localStorage.getItem('numCotizacionKylian')) || 1;
+    document.getElementById('inputNumero').value = numeroActual;
+
     // Colocar fecha actual
     const fecha = new Date();
     document.getElementById('fechaActual').innerText = `Fecha: ${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
@@ -315,8 +330,12 @@
         actualizarCotizacion();
     }
 
-    // Actualizar vista previa y calcular totales automáticamente
+    // Actualizar vista previa y correlativo
     function actualizarCotizacion() {
+        const num = parseInt(document.getElementById('inputNumero').value) || 1;
+        const numFormateado = "N° " + String(num).padStart(3, '0'); // Convierte 1 en "N° 001"
+        document.getElementById('pdfNumero').innerText = numFormateado;
+
         const cliente = document.getElementById('inputCliente').value;
         const atencion = document.getElementById('inputAtencion').value;
 
@@ -354,20 +373,27 @@
     // Inicializar al cargar
     actualizarCotizacion();
 
-    // Descargar PDF
+    // Descargar PDF y sumar +1 al correlativo
     function descargarPDF() {
         const elemento = document.getElementById('cotizacion-pdf');
+        const numCot = String(document.getElementById('inputNumero').value).padStart(3, '0');
         const nombreCliente = document.getElementById('inputCliente').value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         
         const opciones = {
             margin:       10,
-            filename:     `cotizacion_${nombreCliente}.pdf`,
+            filename:     `cotizacion_${numCot}_${nombreCliente}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
             html2canvas:  { scale: 2 },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        html2pdf().set(opciones).from(elemento).save();
+        html2pdf().set(opciones).from(elemento).save().then(() => {
+            // Una vez descargado el PDF, incrementamos la correlación automáticamente
+            let siguienteNum = (parseInt(document.getElementById('inputNumero').value) || 1) + 1;
+            document.getElementById('inputNumero').value = siguienteNum;
+            localStorage.setItem('numCotizacionKylian', siguienteNum); // Guardar en memoria
+            actualizarCotizacion();
+        });
     }
 </script>
 
