@@ -13,7 +13,7 @@
       font-family: Arial, Helvetica, sans-serif;
     }
     body {
-      background-color: #2c3e50;
+      background-color: #1e293b;
       padding: 20px;
     }
     .app-layout {
@@ -108,15 +108,12 @@
 
     /* DOCUMENTO VISTA PREVIA (A4) */
     .document-preview {
-      flex: 1;
+      width: 790px;
       background: #ffffff;
-      padding: 35px;
+      padding: 30px;
       border-radius: 4px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-      min-height: 980px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      box-sizing: border-box;
     }
 
     /* ENCABEZADO Y LOGO KYLIAN */
@@ -125,16 +122,16 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: 3px solid #0d47a1;
-      padding-bottom: 15px;
-      margin-bottom: 20px;
+      padding-bottom: 12px;
+      margin-bottom: 15px;
     }
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
     }
     .company-details h1 {
-      font-size: 18px;
+      font-size: 17px;
       color: #0d47a1;
       font-weight: 800;
       text-transform: uppercase;
@@ -166,7 +163,7 @@
       background-color: #f8f9fa;
       border-left: 4px solid #0d47a1;
       padding: 10px 15px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-size: 12px;
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -178,7 +175,7 @@
     .items-table {
       width: 100%;
       border-collapse: collapse;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
     .items-table th {
       background-color: #0d47a1;
@@ -197,9 +194,9 @@
 
     /* TOTALES */
     .totals-container {
-      width: 260px;
+      width: 250px;
       margin-left: auto;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       font-size: 12px;
     }
     .total-line {
@@ -222,7 +219,7 @@
       color: #555;
       border-top: 1px solid #ddd;
       padding-top: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
     }
     .conditions-box h4 {
       font-size: 11px;
@@ -233,10 +230,10 @@
       padding-left: 15px;
     }
 
-    /* FRANJA INFERIOR MARCAS (COMPATIBLE PDF Y NAVEGADOR) */
+    /* FRANJA INFERIOR MARCAS (CANVAS DIRECTO COMPATIBLE CON PDF) */
     .footer-brands-section {
       border-top: 2px solid #0d47a1;
-      padding-top: 10px;
+      padding-top: 12px;
       text-align: center;
     }
     .footer-brands-title {
@@ -251,7 +248,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
     .brand-box {
       border: 1px solid #d0d0d0;
@@ -265,24 +262,23 @@
       justify-content: center;
       height: 58px;
     }
-    .brand-box img {
-      max-width: 90%;
-      max-height: 28px;
-      object-fit: contain;
+    .brand-box canvas {
+      max-width: 95%;
+      height: 30px;
       display: block;
     }
     .brand-box span {
       font-size: 8px;
       font-weight: bold;
       color: #333333;
-      margin-top: 3px;
+      margin-top: 2px;
       display: block;
     }
 
     @media print {
       .no-print { display: none !important; }
       body { background: white; padding: 0; }
-      .document-preview { box-shadow: none; padding: 20px; }
+      .document-preview { box-shadow: none; padding: 0; width: 100%; }
     }
   </style>
 </head>
@@ -320,125 +316,113 @@
     </div>
 
     <div class="document-preview" id="documentoPDF">
-      <div>
-        <div class="doc-header">
-          <div class="logo-container">
-            <!-- LOGO SERVICIOS GENERALES KYLIAN EN BASE64 -->
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='170' height='70' viewBox='0 0 170 70'><rect width='170' height='70' rx='6' fill='%230d47a1'/><circle cx='32' cy='35' r='18' fill='none' stroke='%23ffca28' stroke-width='4' stroke-dasharray='6,3'/><path d='M25 35h14M32 28v14' stroke='%2300bcd4' stroke-width='4' stroke-linecap='round'/><text x='60' y='32' fill='%23ffffff' font-family='Arial' font-size='11' font-weight='bold'>SERVICIOS</text><text x='60' y='50' fill='%23ffca28' font-family='Arial' font-size='16' font-weight='bold'>KYLIAN</text></svg>" alt="Logo Kylian" style="width: 170px; height: 70px;">
-            <div class="company-details">
-              <h1>Servicios Generales Kylian</h1>
-              <p>Mecánica Multimarca & Mantenimiento General</p>
-              <p>RUC: 10458796321 | Tel: +51 987 654 321</p>
-            </div>
-          </div>
-          <div class="doc-title-info">
-            <h2>COTIZACIÓN</h2>
-            <div class="num" id="lblNumero">N° 020</div>
-            <div class="date" id="lblFecha">Fecha: --/--/----</div>
+      <div class="doc-header">
+        <div class="logo-container">
+          <canvas id="canvasKylian" width="160" height="65"></canvas>
+          <div class="company-details">
+            <h1>Servicios Generales Kylian</h1>
+            <p>Mecánica Multimarca & Mantenimiento General</p>
+            <p>RUC: 10458796321 | Tel: +51 987 654 321</p>
           </div>
         </div>
-
-        <div class="client-info-box">
-          <div><strong>CLIENTE:</strong> <span id="lblCliente">EMPRESA ABC S.A.C.</span></div>
-          <div><strong>ATENCIÓN:</strong> <span id="lblContacto">Ing. Juan Pérez</span></div>
-          <div><strong>TELÉFONO:</strong> <span id="lblTelefono">987 654 321</span></div>
-          <div><strong>MONEDA:</strong> Soles (S/.)</div>
-        </div>
-
-        <table class="items-table">
-          <thead>
-            <tr>
-              <th>DESCRIPCIÓN DEL SERVICIO / REPUESTO</th>
-              <th class="center" style="width: 65px;">CANT.</th>
-              <th class="right" style="width: 100px;">P. UNIT (S/.)</th>
-              <th class="right" style="width: 100px;">TOTAL (S/.)</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyServicios">
-          </tbody>
-        </table>
-
-        <div class="totals-container">
-          <div class="total-line">
-            <span>Subtotal:</span>
-            <span>S/. <span id="lblSubtotal">0.00</span></span>
-          </div>
-          <div class="total-line">
-            <span>IGV (18%):</span>
-            <span>S/. <span id="lblIgv">0.00</span></span>
-          </div>
-          <div class="total-line final">
-            <span>TOTAL:</span>
-            <span>S/. <span id="lblTotal">0.00</span></span>
-          </div>
-        </div>
-
-        <div class="conditions-box">
-          <h4>Condiciones Comerciales:</h4>
-          <ul>
-            <li>Forma de pago: Según acuerdo comercial.</li>
-            <li>Garantía en mano de obra y repuestos especificados.</li>
-            <li>Validez de la oferta: 15 días calendario.</li>
-          </ul>
+        <div class="doc-title-info">
+          <h2>COTIZACIÓN</h2>
+          <div class="num" id="lblNumero">N° 020</div>
+          <div class="date" id="lblFecha">Fecha: --/--/----</div>
         </div>
       </div>
 
-      <!-- FRANJA INFERIOR DE MARCAS (OPTIMIZADA PARA CAPTURA HTML2CANVAS) -->
+      <div class="client-info-box">
+        <div><strong>CLIENTE:</strong> <span id="lblCliente">EMPRESA ABC S.A.C.</span></div>
+        <div><strong>ATENCIÓN:</strong> <span id="lblContacto">Ing. Juan Pérez</span></div>
+        <div><strong>TELÉFONO:</strong> <span id="lblTelefono">987 654 321</span></div>
+        <div><strong>MONEDA:</strong> Soles (S/.)</div>
+      </div>
+
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>DESCRIPCIÓN DEL SERVICIO / REPUESTO</th>
+            <th class="center" style="width: 65px;">CANT.</th>
+            <th class="right" style="width: 100px;">P. UNIT (S/.)</th>
+            <th class="right" style="width: 100px;">TOTAL (S/.)</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyServicios">
+        </tbody>
+      </table>
+
+      <div class="totals-container">
+        <div class="total-line">
+          <span>Subtotal:</span>
+          <span>S/. <span id="lblSubtotal">0.00</span></span>
+        </div>
+        <div class="total-line">
+          <span>IGV (18%):</span>
+          <span>S/. <span id="lblIgv">0.00</span></span>
+        </div>
+        <div class="total-line final">
+          <span>TOTAL:</span>
+          <span>S/. <span id="lblTotal">0.00</span></span>
+        </div>
+      </div>
+
+      <div class="conditions-box">
+        <h4>Condiciones Comerciales:</h4>
+        <ul>
+          <li>Forma de pago: Según acuerdo comercial.</li>
+          <li>Garantía en mano de obra y repuestos especificados.</li>
+          <li>Validez de la oferta: 15 días calendario.</li>
+        </ul>
+      </div>
+
+      <!-- FRANJA INFERIOR MARCAS CON CANVAS -->
       <div class="footer-brands-section">
         <div class="footer-brands-title">Especialistas en Atención y Mantenimiento Multimarca</div>
         <div class="brands-grid">
-          
-          <!-- TOYOTA -->
+
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><ellipse cx='50' cy='30' rx='42' ry='24' fill='none' stroke='%23eb0a1e' stroke-width='5'/><ellipse cx='50' cy='20' rx='26' ry='10' fill='none' stroke='%23eb0a1e' stroke-width='5'/><ellipse cx='50' cy='30' rx='10' ry='24' fill='none' stroke='%23eb0a1e' stroke-width='5'/></svg>" alt="Toyota">
+            <canvas id="cToyota" width="70" height="35"></canvas>
             <span>TOYOTA</span>
           </div>
 
-          <!-- HYUNDAI -->
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><ellipse cx='50' cy='30' rx='42' ry='22' fill='none' stroke='%23002c6c' stroke-width='5'/><path d='M35 16 Q37 30 35 44 M65 16 Q63 30 65 44 M35 30 L65 27' stroke='%23002c6c' stroke-width='6' stroke-linecap='round' fill='none'/></svg>" alt="Hyundai">
+            <canvas id="cHyundai" width="70" height="35"></canvas>
             <span>HYUNDAI</span>
           </div>
 
-          <!-- NISSAN -->
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><circle cx='50' cy='30' r='22' fill='none' stroke='%23c00000' stroke-width='5'/><rect x='10' y='22' width='80' height='16' fill='%23c00000'/><text x='50' y='34' font-family='Arial' font-size='10' font-weight='bold' fill='%23ffffff' text-anchor='middle'>NISSAN</text></svg>" alt="Nissan">
+            <canvas id="cNissan" width="70" height="35"></canvas>
             <span>NISSAN</span>
           </div>
 
-          <!-- CHEVROLET -->
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><path d='M 15,24 L 38,24 L 38,14 L 62,14 L 62,24 L 85,24 L 85,36 L 62,36 L 62,46 L 38,46 L 38,36 L 15,36 Z' fill='%23d4af37' stroke='%23996515' stroke-width='2'/></svg>" alt="Chevrolet">
+            <canvas id="cChevrolet" width="70" height="35"></canvas>
             <span>CHEVROLET</span>
           </div>
 
-          <!-- KIA -->
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><ellipse cx='50' cy='30' rx='42' ry='20' fill='none' stroke='%23bb162b' stroke-width='5'/><text x='50' y='37' font-family='Arial' font-size='20' font-weight='900' fill='%23bb162b' text-anchor='middle'>KIA</text></svg>" alt="Kia">
+            <canvas id="cKia" width="70" height="35"></canvas>
             <span>KIA</span>
           </div>
 
-          <!-- FORD -->
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><ellipse cx='50' cy='30' rx='44' ry='22' fill='%231c3b6f'/><ellipse cx='50' cy='30' rx='40' ry='18' fill='none' stroke='%23ffffff' stroke-width='2'/><text x='50' y='37' font-family='Georgia' font-size='18' font-weight='bold' font-style='italic' fill='%23ffffff' text-anchor='middle'>Ford</text></svg>" alt="Ford">
+            <canvas id="cFord" width="70" height="35"></canvas>
             <span>FORD</span>
           </div>
 
-          <!-- VOLKSWAGEN -->
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><circle cx='50' cy='30' r='23' fill='%231b365d'/><circle cx='50' cy='30' r='20' fill='none' stroke='%23ffffff' stroke-width='2'/><path d='M36 18 L44 32 L50 18 L56 32 L64 18 M36 42 L50 26 L64 42' fill='none' stroke='%23ffffff' stroke-width='3' stroke-linecap='round'/></svg>" alt="Volkswagen">
+            <canvas id="cVolkswagen" width="70" height="35"></canvas>
             <span>VOLKSWAGEN</span>
           </div>
 
-          <!-- MITSUBISHI -->
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><polygon points='50,12 40,29 60,29' fill='%23d50000'/><polygon points='40,29 20,29 30,46' fill='%23d50000'/><polygon points='60,29 80,29 70,46' fill='%23d50000'/></svg>" alt="Mitsubishi">
+            <canvas id="cMitsubishi" width="70" height="35"></canvas>
             <span>MITSUBISHI</span>
           </div>
 
-          <!-- ISUZU -->
           <div class="brand-box">
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'><text x='50' y='38' font-family='Arial Black' font-size='16' font-weight='900' fill='%23cc0000' text-anchor='middle'>ISUZU</text></svg>" alt="Isuzu">
+            <canvas id="cIsuzu" width="70" height="35"></canvas>
             <span>ISUZU</span>
           </div>
 
@@ -448,9 +432,111 @@
   </div>
 
   <script>
-    // Fecha actual
+    // Configuración de fecha
     const fecha = new Date();
     document.getElementById('lblFecha').innerText = 'Fecha: ' + fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear();
+
+    // DIBUJAR LOGOS EN CANVAS NATIVO (100% COMPATIBLE CON PDF)
+    function renderizarLogos() {
+      // 1. Logo Kylian
+      const cK = document.getElementById('canvasKylian');
+      const ctxK = cK.getContext('2d');
+      ctxK.fillStyle = '#0d47a1';
+      ctxK.beginPath();
+      ctxK.roundRect(0, 0, 160, 65, 6);
+      ctxK.fill();
+
+      ctxK.strokeStyle = '#ffca28';
+      ctxK.lineWidth = 3;
+      ctxK.setLineDash([5, 3]);
+      ctxK.beginPath();
+      ctxK.arc(30, 32, 16, 0, Math.PI * 2);
+      ctxK.stroke();
+      ctxK.setLineDash([]);
+
+      ctxK.strokeStyle = '#00bcd4';
+      ctxK.lineWidth = 4;
+      ctxK.beginPath();
+      ctxK.moveTo(23, 32); ctxK.lineTo(37, 32);
+      ctxK.moveTo(30, 25); ctxK.lineTo(30, 39);
+      ctxK.stroke();
+
+      ctxK.fillStyle = '#ffffff';
+      ctxK.font = 'bold 10px Arial';
+      ctxK.fillText('SERVICIOS', 55, 30);
+      ctxK.fillStyle = '#ffca28';
+      ctxK.font = 'bold 15px Arial';
+      ctxK.fillText('KYLIAN', 55, 48);
+
+      // 2. Toyota
+      const cToy = document.getElementById('cToyota').getContext('2d');
+      cToy.strokeStyle = '#eb0a1e'; cToy.lineWidth = 3;
+      cToy.beginPath(); cToy.ellipse(35, 17, 28, 14, 0, 0, Math.PI * 2); cToy.stroke();
+      cToy.beginPath(); cToy.ellipse(35, 12, 18, 6, 0, 0, Math.PI * 2); cToy.stroke();
+      cToy.beginPath(); cToy.ellipse(35, 17, 7, 14, 0, 0, Math.PI * 2); cToy.stroke();
+
+      // 3. Hyundai
+      const cHyu = document.getElementById('cHyundai').getContext('2d');
+      cHyu.strokeStyle = '#002c6c'; cHyu.lineWidth = 3;
+      cHyu.beginPath(); cHyu.ellipse(35, 17, 28, 14, 0, 0, Math.PI * 2); cHyu.stroke();
+      cHyu.font = 'bold italic 22px Arial'; cHyu.fillStyle = '#002c6c';
+      cHyu.fillText('H', 26, 25);
+
+      // 4. Nissan
+      const cNis = document.getElementById('cNissan').getContext('2d');
+      cNis.strokeStyle = '#c00000'; cNis.lineWidth = 3;
+      cNis.beginPath(); cNis.arc(35, 17, 13, 0, Math.PI * 2); cNis.stroke();
+      cNis.fillStyle = '#c00000'; cNis.fillRect(8, 12, 54, 10);
+      cNis.fillStyle = '#ffffff'; cNis.font = 'bold 7px Arial';
+      cNis.fillText('NISSAN', 15, 20);
+
+      // 5. Chevrolet
+      const cChe = document.getElementById('cChevrolet').getContext('2d');
+      cChe.fillStyle = '#d4af37'; cChe.strokeStyle = '#996515'; cChe.lineWidth = 1;
+      cChe.beginPath();
+      cChe.moveTo(10, 14); cChe.lineTo(26, 14); cChe.lineTo(26, 8);
+      cChe.lineTo(44, 8); cChe.lineTo(44, 14); cChe.lineTo(60, 14);
+      cChe.lineTo(60, 20); cChe.lineTo(44, 20); cChe.lineTo(44, 26);
+      cChe.lineTo(26, 26); cChe.lineTo(26, 20); cChe.lineTo(10, 20);
+      cChe.closePath(); cChe.fill(); cChe.stroke();
+
+      // 6. Kia
+      const cKia = document.getElementById('cKia').getContext('2d');
+      cKia.strokeStyle = '#bb162b'; cKia.lineWidth = 3;
+      cKia.beginPath(); cKia.ellipse(35, 17, 28, 13, 0, 0, Math.PI * 2); cKia.stroke();
+      cKia.fillStyle = '#bb162b'; cKia.font = '900 15px Arial';
+      cKia.fillText('KIA', 21, 22);
+
+      // 7. Ford
+      const cFor = document.getElementById('cFord').getContext('2d');
+      cFor.fillStyle = '#1c3b6f';
+      cFor.beginPath(); cFor.ellipse(35, 17, 30, 14, 0, 0, Math.PI * 2); cFor.fill();
+      cFor.strokeStyle = '#ffffff'; cFor.lineWidth = 1.5;
+      cFor.beginPath(); cFor.ellipse(35, 17, 27, 12, 0, 0, Math.PI * 2); cFor.stroke();
+      cFor.fillStyle = '#ffffff'; cFor.font = 'italic bold 13px Georgia';
+      cFor.fillText('Ford', 22, 21);
+
+      // 8. Volkswagen
+      const cVw = document.getElementById('cVolkswagen').getContext('2d');
+      cVw.fillStyle = '#1b365d';
+      cVw.beginPath(); cVw.arc(35, 17, 15, 0, Math.PI * 2); cVw.fill();
+      cVw.strokeStyle = '#ffffff'; cVw.lineWidth = 2;
+      cVw.beginPath(); cVw.arc(35, 17, 13, 0, Math.PI * 2); cVw.stroke();
+      cVw.font = 'bold 11px Arial'; cVw.fillStyle = '#ffffff';
+      cVw.fillText('W', 29, 22);
+
+      // 9. Mitsubishi
+      const cMit = document.getElementById('cMitsubishi').getContext('2d');
+      cMit.fillStyle = '#d50000';
+      cMit.beginPath(); cMit.moveTo(35, 5); cMit.lineTo(28, 17); cMit.lineTo(42, 17); cMit.fill();
+      cMit.beginPath(); cMit.moveTo(28, 17); cMit.lineTo(14, 17); cMit.lineTo(21, 29); cMit.fill();
+      cMit.beginPath(); cMit.moveTo(42, 17); cMit.lineTo(56, 17); cMit.lineTo(49, 29); cMit.fill();
+
+      // 10. Isuzu
+      const cIsu = document.getElementById('cIsuzu').getContext('2d');
+      cIsu.fillStyle = '#cc0000'; cIsu.font = '900 13px Arial';
+      cIsu.fillText('ISUZU', 15, 22);
+    }
 
     function agregarFila(desc = '', cant = 1, pu = 0) {
       const container = document.getElementById('controlItemsContainer');
@@ -472,14 +558,12 @@
     }
 
     function actualizarDocumento() {
-      // 1. Número y cliente
       const num = document.getElementById('inNumero').value || 20;
       document.getElementById('lblNumero').innerText = 'N° ' + String(num).padStart(3, '0');
       document.getElementById('lblCliente').innerText = document.getElementById('inCliente').value;
       document.getElementById('lblContacto').innerText = document.getElementById('inContacto').value;
       document.getElementById('lblTelefono').innerText = document.getElementById('inTelefono').value;
 
-      // 2. Filas
       const tbody = document.getElementById('tbodyServicios');
       tbody.innerHTML = '';
 
@@ -507,7 +591,6 @@
         tbody.appendChild(tr);
       }
 
-      // 3. Totales (Subtotal + IGV 18% = Total)
       const igv = subtotalGeneral * 0.18;
       const totalGeneral = subtotalGeneral + igv;
 
@@ -521,7 +604,7 @@
       const numCot = String(document.getElementById('inNumero').value).padStart(3, '0');
 
       const opt = {
-        margin: [6, 6, 6, 6],
+        margin: 0,
         filename: `Cotizacion_Kylian_N_${numCot}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true, logging: false },
@@ -535,9 +618,12 @@
       });
     }
 
-    // Cargar Ítems Iniciales
-    agregarFila('Mantenimiento preventivo de frenos', 1, 250);
-    agregarFila('Cambio de aceite sintético y filtro', 1, 180);
+    // Inicializar Dibujos y Filas
+    window.onload = function() {
+      renderizarLogos();
+      agregarFila('Mantenimiento preventivo de frenos', 1, 250);
+      agregarFila('Cambio de aceite sintético y filtro', 1, 180);
+    };
   </script>
 </body>
 </html>
