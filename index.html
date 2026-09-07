@@ -3,37 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cotizador Profesional - Servicios Generales Kylian</title>
+  <title>Sistema de Cotización - Servicios Generales Kylian</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
     body {
-      background-color: #3a3d40;
+      background-color: #333d47;
       padding: 20px;
     }
-    .container {
+    .app-layout {
       display: flex;
       gap: 20px;
-      max-width: 1450px;
+      max-width: 1400px;
       margin: 0 auto;
       align-items: flex-start;
     }
 
     /* CONTROLES IZQUIERDA */
-    .editor-panel {
-      width: 420px;
+    .controls-sidebar {
+      width: 400px;
       background: #ffffff;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
       flex-shrink: 0;
     }
-    .editor-panel h2 {
+    .controls-sidebar h2 {
       font-size: 18px;
       color: #0d47a1;
       margin-bottom: 15px;
@@ -57,16 +57,22 @@
       border-radius: 4px;
       font-size: 13px;
     }
-    .item-row-control {
+    .items-title {
+      font-weight: bold;
+      font-size: 13px;
+      margin: 15px 0 8px 0;
+      color: #0d47a1;
+    }
+    .item-control-row {
       display: flex;
       gap: 5px;
       margin-bottom: 8px;
       align-items: center;
     }
-    .item-row-control input.desc { flex: 2; }
-    .item-row-control input.cant { width: 55px; text-align: center; }
-    .item-row-control input.pu { width: 85px; text-align: right; }
-    .btn-remove {
+    .item-control-row input.desc { flex: 2; }
+    .item-control-row input.cant { width: 55px; text-align: center; }
+    .item-control-row input.pu { width: 80px; text-align: right; }
+    .btn-del-row {
       background: #dc3545;
       color: white;
       border: none;
@@ -76,7 +82,7 @@
       cursor: pointer;
       font-weight: bold;
     }
-    .btn-add {
+    .btn-add-row {
       width: 100%;
       padding: 10px;
       background-color: #28a745;
@@ -88,7 +94,7 @@
       margin-top: 5px;
       margin-bottom: 15px;
     }
-    .btn-download {
+    .btn-generate-pdf {
       width: 100%;
       padding: 12px;
       background-color: #0d47a1;
@@ -100,11 +106,11 @@
       cursor: pointer;
     }
 
-    /* DOCUMENTO A4 DERECHA */
-    .pdf-page {
+    /* DOCUMENTO VISTA PREVIA (A4) */
+    .document-preview {
       flex: 1;
       background: #ffffff;
-      padding: 40px;
+      padding: 35px;
       border-radius: 4px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.4);
       min-height: 980px;
@@ -113,7 +119,7 @@
       justify-content: space-between;
     }
 
-    /* HEADER */
+    /* ENCABEZADO Y LOGO KYLIAN */
     .doc-header {
       display: flex;
       justify-content: space-between;
@@ -122,46 +128,45 @@
       padding-bottom: 15px;
       margin-bottom: 20px;
     }
-    .brand-container {
+    .logo-container {
       display: flex;
       align-items: center;
       gap: 15px;
     }
-    .brand-container img {
-      max-height: 85px;
-      max-width: 200px;
-      object-fit: contain;
+    .logo-svg {
+      width: 170px;
+      height: 70px;
     }
-    .brand-info h1 {
-      font-size: 20px;
+    .company-details h1 {
+      font-size: 19px;
       color: #0d47a1;
       font-weight: 800;
       text-transform: uppercase;
     }
-    .brand-info p {
+    .company-details p {
       font-size: 11px;
       color: #555;
     }
-    .doc-meta {
+    .doc-title-info {
       text-align: right;
     }
-    .doc-meta h2 {
+    .doc-title-info h2 {
       font-size: 22px;
       color: #222;
     }
-    .doc-meta .number {
+    .doc-title-info .num {
       font-size: 16px;
       font-weight: bold;
       color: #d32f2f;
       margin-top: 2px;
     }
-    .doc-meta .date {
+    .doc-title-info .date {
       font-size: 12px;
       color: #666;
     }
 
     /* CLIENTE */
-    .client-card {
+    .client-info-box {
       background-color: #f8f9fa;
       border-left: 4px solid #0d47a1;
       padding: 10px 15px;
@@ -171,42 +176,42 @@
       grid-template-columns: 1fr 1fr;
       gap: 6px;
     }
-    .client-card strong { color: #0d47a1; }
+    .client-info-box strong { color: #0d47a1; }
 
-    /* TABLA DE DETALLES */
-    .detail-table {
+    /* TABLA DE ÍTEMS */
+    .items-table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
     }
-    .detail-table th {
+    .items-table th {
       background-color: #0d47a1;
       color: white;
       padding: 8px 10px;
       font-size: 12px;
       text-align: left;
     }
-    .detail-table th.center, .detail-table td.center { text-align: center; }
-    .detail-table th.right, .detail-table td.right { text-align: right; }
-    .detail-table td {
+    .items-table th.center, .items-table td.center { text-align: center; }
+    .items-table th.right, .items-table td.right { text-align: right; }
+    .items-table td {
       padding: 8px 10px;
       border-bottom: 1px solid #e0e0e0;
       font-size: 12px;
     }
 
     /* TOTALES */
-    .totals-card {
+    .totals-container {
       width: 260px;
       margin-left: auto;
       margin-bottom: 25px;
       font-size: 12px;
     }
-    .row-total {
+    .total-line {
       display: flex;
       justify-content: space-between;
       padding: 3px 0;
     }
-    .row-total.final {
+    .total-line.final {
       border-top: 2px solid #0d47a1;
       font-weight: bold;
       font-size: 14px;
@@ -216,29 +221,29 @@
     }
 
     /* CONDICIONES */
-    .terms-block {
+    .conditions-box {
       font-size: 11px;
       color: #555;
       border-top: 1px solid #ddd;
       padding-top: 10px;
       margin-bottom: 20px;
     }
-    .terms-block h4 {
+    .conditions-box h4 {
       font-size: 11px;
       color: #333;
       margin-bottom: 3px;
     }
-    .terms-block ul {
+    .conditions-box ul {
       padding-left: 15px;
     }
 
-    /* SECCIÓN LOGOS MULTIMARCA */
-    .brand-footer {
+    /* FRANJA LOGOS MARCAS INFERIORES */
+    .footer-brands-section {
       border-top: 2px solid #0d47a1;
       padding-top: 10px;
       text-align: center;
     }
-    .brand-footer-title {
+    .footer-brands-title {
       font-size: 10px;
       font-weight: bold;
       color: #0d47a1;
@@ -246,16 +251,16 @@
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
-    .brand-logos-grid {
+    .brands-grid {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
-    .brand-logo-item {
-      border: 1px solid #ddd;
+    .brand-box {
+      border: 1px solid #ccc;
       border-radius: 4px;
-      padding: 4px;
+      padding: 5px 3px;
       background: #fafafa;
       flex: 1;
       display: flex;
@@ -263,89 +268,88 @@
       align-items: center;
       justify-content: center;
     }
-    .brand-logo-item svg {
-      width: 24px;
-      height: 24px;
-      fill: #333;
+    .brand-box svg {
+      width: 28px;
+      height: 20px;
     }
-    .brand-logo-item span {
+    .brand-box span {
       font-size: 8px;
       font-weight: bold;
-      color: #333;
-      margin-top: 2px;
+      color: #222;
+      margin-top: 3px;
     }
 
     @media print {
       .no-print { display: none !important; }
       body { background: white; padding: 0; }
-      .pdf-page { box-shadow: none; padding: 20px; }
+      .document-preview { box-shadow: none; padding: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="editor-panel no-print">
-      <h2>Panel de Edición</h2>
-
-      <div class="form-group">
-        <label>Cargar Logo del Taller (PNG / JPG):</label>
-        <input type="file" accept="image/*" onchange="cargarLogoTaller(event)">
-      </div>
+  <div class="app-layout">
+    <div class="controls-sidebar no-print">
+      <h2>Generador de Cotización</h2>
 
       <div class="form-group">
         <label>N° de Cotización:</label>
-        <input type="number" id="inNumero" value="20" oninput="actualizarVista()">
+        <input type="number" id="inNumero" value="20" oninput="actualizarDocumento()">
       </div>
 
       <div class="form-group">
         <label>Cliente / Razón Social:</label>
-        <input type="text" id="inCliente" value="EMPRESA ABC S.A.C." oninput="actualizarVista()">
+        <input type="text" id="inCliente" value="EMPRESA ABC S.A.C." oninput="actualizarDocumento()">
       </div>
 
       <div class="form-group">
         <label>Persona de Contacto:</label>
-        <input type="text" id="inContacto" value="Ing. Juan Pérez" oninput="actualizarVista()">
+        <input type="text" id="inContacto" value="Ing. Juan Pérez" oninput="actualizarDocumento()">
       </div>
 
       <div class="form-group">
         <label>Teléfono Cliente:</label>
-        <input type="text" id="inTelefono" value="987 654 321" oninput="actualizarVista()">
+        <input type="text" id="inTelefono" value="987 654 321" oninput="actualizarDocumento()">
       </div>
 
-      <div style="font-weight: bold; font-size: 13px; margin: 15px 0 8px 0; color: #0d47a1;">Ítems Cotizados:</div>
-      <div id="itemsControlContainer"></div>
+      <div class="items-title">Servicios / Repuestos:</div>
+      <div id="controlItemsContainer"></div>
 
-      <button class="btn-add" onclick="agregarFilaControl('Servicio de Mantenimiento', 1, 250)">+ Agregar Ítem</button>
-      <button class="btn-download" onclick="descargarPDF()">Descargar Cotización (PDF)</button>
+      <button class="btn-add-row" onclick="agregarFila('Servicio de Mantenimiento', 1, 250)">+ Agregar Ítem</button>
+      <button class="btn-generate-pdf" onclick="descargarPDF()">Descargar Cotización (PDF)</button>
     </div>
 
-    <div class="pdf-page" id="documentoPDF">
+    <div class="document-preview" id="documentoPDF">
       <div>
         <div class="doc-header">
-          <div class="brand-container">
-            <img id="logoTallerImg" src="" alt="Logo Taller">
-            <div class="brand-info">
+          <div class="logo-container">
+            <svg class="logo-svg" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+              <rect x="0" y="0" width="200" height="80" rx="8" fill="#0d47a1"/>
+              <path d="M20 20 L35 40 L20 60 L30 60 L40 46 L50 60 L60 60 L45 40 L60 20 L50 20 L40 34 L30 20 Z" fill="#ffffff"/>
+              <text x="68" y="38" fill="#ffffff" font-family="Arial" font-size="16" font-weight="bold">SERVICIOS</text>
+              <text x="68" y="58" fill="#ffca28" font-family="Arial" font-size="15" font-weight="bold">KYLIAN</text>
+            </svg>
+            <div class="company-details">
               <h1>Servicios Generales Kylian</h1>
               <p>Mecánica Multimarca & Mantenimiento General</p>
               <p>RUC: 10458796321 | Tel: +51 987 654 321</p>
             </div>
           </div>
-          <div class="doc-meta">
+          <div class="doc-title-info">
             <h2>COTIZACIÓN</h2>
-            <div class="number" id="lblNumero">N° 020</div>
+            <div class="num" id="lblNumero">N° 020</div>
             <div class="date" id="lblFecha">Fecha: --/--/----</div>
           </div>
         </div>
 
-        <div class="client-card">
+        <div class="client-info-box">
           <div><strong>CLIENTE:</strong> <span id="lblCliente">EMPRESA ABC S.A.C.</span></div>
           <div><strong>ATENCIÓN:</strong> <span id="lblContacto">Ing. Juan Pérez</span></div>
           <div><strong>TELÉFONO:</strong> <span id="lblTelefono">987 654 321</span></div>
           <div><strong>MONEDA:</strong> Soles (S/.)</div>
         </div>
 
-        <table class="detail-table">
+        <table class="items-table">
           <thead>
             <tr>
               <th>DESCRIPCIÓN DEL SERVICIO / REPUESTO</th>
@@ -358,22 +362,22 @@
             </tbody>
         </table>
 
-        <div class="totals-card">
-          <div class="row-total">
+        <div class="totals-container">
+          <div class="total-line">
             <span>Subtotal:</span>
             <span>S/. <span id="lblSubtotal">0.00</span></span>
           </div>
-          <div class="row-total">
+          <div class="total-line">
             <span>IGV (18%):</span>
             <span>S/. <span id="lblIgv">0.00</span></span>
           </div>
-          <div class="row-total final">
+          <div class="total-line final">
             <span>TOTAL:</span>
             <span>S/. <span id="lblTotal">0.00</span></span>
           </div>
         </div>
 
-        <div class="terms-block">
+        <div class="conditions-box">
           <h4>Condiciones Comerciales:</h4>
           <ul>
             <li>Forma de pago: Según acuerdo comercial.</li>
@@ -383,109 +387,129 @@
         </div>
       </div>
 
-      <div class="brand-footer">
-        <div class="brand-footer-title">Especialistas en Atención y Mantenimiento Multimarca</div>
-        <div class="brand-logos-grid">
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+      <div class="footer-brands-section">
+        <div class="footer-brands-title">Especialistas en Atención y Mantenimiento Multimarca</div>
+        <div class="brands-grid">
+          
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <ellipse cx="50" cy="30" rx="45" ry="25" fill="none" stroke="#cc0000" stroke-width="4"/>
+              <ellipse cx="50" cy="30" rx="35" ry="12" fill="none" stroke="#cc0000" stroke-width="4"/>
+              <ellipse cx="50" cy="30" rx="12" ry="25" fill="none" stroke="#cc0000" stroke-width="4"/>
+            </svg>
             <span>TOYOTA</span>
           </div>
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <ellipse cx="50" cy="30" rx="42" ry="22" fill="none" stroke="#002c6c" stroke-width="4"/>
+              <text x="50" y="42" font-family="Arial" font-size="34" font-weight="bold" font-style="italic" fill="#002c6c" text-anchor="middle">H</text>
+            </svg>
             <span>HYUNDAI</span>
           </div>
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <circle cx="50" cy="30" r="22" fill="none" stroke="#c0c0c0" stroke-width="4"/>
+              <rect x="15" y="22" width="70" height="16" fill="#111111"/>
+              <text x="50" y="34" font-family="Arial" font-size="10" font-weight="bold" fill="#ffffff" text-anchor="middle">NISSAN</text>
+            </svg>
             <span>NISSAN</span>
           </div>
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <path d="M 20,22 L 35,22 L 35,12 L 65,12 L 65,22 L 80,22 L 85,38 L 65,38 L 65,48 L 35,48 L 35,38 L 15,38 Z" fill="#d4af37" stroke="#b8860b" stroke-width="2"/>
+            </svg>
             <span>CHEVROLET</span>
           </div>
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <ellipse cx="50" cy="30" rx="42" ry="20" fill="none" stroke="#bb162b" stroke-width="4"/>
+              <text x="50" y="38" font-family="Arial" font-size="20" font-weight="bold" fill="#bb162b" text-anchor="middle">KIA</text>
+            </svg>
             <span>KIA</span>
           </div>
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <ellipse cx="50" cy="30" rx="42" ry="22" fill="#1c3b6f"/>
+              <ellipse cx="50" cy="30" rx="40" ry="20" fill="none" stroke="#ffffff" stroke-width="2"/>
+              <text x="50" y="38" font-family="Brush Script MT, cursive, Arial" font-size="22" font-weight="bold" font-style="italic" fill="#ffffff" text-anchor="middle">Ford</text>
+            </svg>
             <span>FORD</span>
           </div>
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <circle cx="50" cy="30" r="22" fill="#1b365d"/>
+              <circle cx="50" cy="30" r="20" fill="none" stroke="#ffffff" stroke-width="2"/>
+              <path d="M38,18 L44,32 L50,18 L56,32 L62,18 M38,42 L50,26 L62,42" fill="none" stroke="#ffffff" stroke-width="3"/>
+            </svg>
             <span>VOLKSWAGEN</span>
           </div>
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <polygon points="50,10 40,28 60,28" fill="#d50000"/>
+              <polygon points="40,28 20,28 30,46" fill="#d50000"/>
+              <polygon points="60,28 80,28 70,46" fill="#d50000"/>
+            </svg>
             <span>MITSUBISHI</span>
           </div>
-          <div class="brand-logo-item">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+
+          <div class="brand-box">
+            <svg viewBox="0 0 100 60">
+              <text x="50" y="38" font-family="Impact, Arial" font-size="18" fill="#cc0000" text-anchor="middle">ISUZU</text>
+            </svg>
             <span>ISUZU</span>
           </div>
+
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Logo por defecto
-    const logoSVGDefault = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='70' viewBox='0 0 160 70'><rect width='160' height='70' rx='6' fill='%230d47a1'/><text x='50%' y='40%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Arial' font-size='15' font-weight='bold'>SERVICIOS</text><text x='50%' y='68%' dominant-baseline='middle' text-anchor='middle' fill='%23ffca28' font-family='Arial' font-size='13' font-weight='bold'>KYLIAN</text></svg>";
-
     // Inicializar fecha
     const fecha = new Date();
     document.getElementById('lblFecha').innerText = 'Fecha: ' + fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear();
 
-    // Cargar Logo Guardado o por defecto
-    const logoGuardado = localStorage.getItem('logoKylianStore') || logoSVGDefault;
-    document.getElementById('logoTallerImg').src = logoGuardado;
-
-    function cargarLogoTaller(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const b64 = evt.target.result;
-          document.getElementById('logoTallerImg').src = b64;
-          localStorage.setItem('logoKylianStore', b64);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function agregarFilaControl(desc = '', cant = 1, pu = 0) {
-      const container = document.getElementById('itemsControlContainer');
+    function agregarFila(desc = '', cant = 1, pu = 0) {
+      const container = document.getElementById('controlItemsContainer');
       const div = document.createElement('div');
-      div.className = 'item-row-control';
+      div.className = 'item-control-row';
       div.innerHTML = `
-        <input type="text" class="desc" value="${desc}" placeholder="Descripción" oninput="actualizarVista()">
-        <input type="number" class="cant" value="${cant}" min="1" oninput="actualizarVista()">
-        <input type="number" class="pu" value="${pu}" step="0.1" oninput="actualizarVista()">
-        <button class="btn-remove" onclick="eliminarFilaControl(this)">X</button>
+        <input type="text" class="desc" value="${desc}" placeholder="Descripción" oninput="actualizarDocumento()">
+        <input type="number" class="cant" value="${cant}" min="1" oninput="actualizarDocumento()">
+        <input type="number" class="pu" value="${pu}" step="0.1" oninput="actualizarDocumento()">
+        <button class="btn-del-row" onclick="eliminarFila(this)">X</button>
       `;
       container.appendChild(div);
-      actualizarVista();
+      actualizarDocumento();
     }
 
-    function eliminarFilaControl(btn) {
-      btn.closest('.item-row-control').remove();
-      actualizarVista();
+    function eliminarFila(btn) {
+      btn.closest('.item-control-row').remove();
+      actualizarDocumento();
     }
 
-    function actualizarVista() {
-      // 1. Datos Generales
+    function actualizarDocumento() {
+      // 1. Datos del cliente y número
       const num = document.getElementById('inNumero').value || 20;
       document.getElementById('lblNumero').innerText = 'N° ' + String(num).padStart(3, '0');
       document.getElementById('lblCliente').innerText = document.getElementById('inCliente').value;
       document.getElementById('lblContacto').innerText = document.getElementById('inContacto').value;
       document.getElementById('lblTelefono').innerText = document.getElementById('inTelefono').value;
 
-      // 2. Tabla de Servicios y Cálculos Automáticos
+      // 2. Filas de tabla y cálculo
       const tbody = document.getElementById('tbodyServicios');
       tbody.innerHTML = '';
 
-      const descs = document.querySelectorAll('.item-row-control .desc');
-      const cants = document.querySelectorAll('.item-row-control .cant');
-      const pus = document.querySelectorAll('.item-row-control .pu');
+      const descs = document.querySelectorAll('.item-control-row .desc');
+      const cants = document.querySelectorAll('.item-control-row .cant');
+      const pus = document.querySelectorAll('.item-control-row .pu');
 
       let subtotalGeneral = 0;
 
@@ -507,7 +531,7 @@
         tbody.appendChild(tr);
       }
 
-      // 3. Totales (Subtotal, IGV 18% y Total General)
+      // 3. Totales (Subtotal + IGV 18% = Total)
       const igv = subtotalGeneral * 0.18;
       const totalGeneral = subtotalGeneral + igv;
 
@@ -521,23 +545,23 @@
       const numCot = String(document.getElementById('inNumero').value).padStart(3, '0');
 
       const opt = {
-        margin: [8, 8, 8, 8],
-        filename: `Cotizacion_N_${numCot}.pdf`,
+        margin: [6, 6, 6, 6],
+        filename: `Cotizacion_Kylian_N_${numCot}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       html2pdf().set(opt).from(element).save().then(() => {
         let actual = parseInt(document.getElementById('inNumero').value) || 20;
         document.getElementById('inNumero').value = actual + 1;
-        actualizarVista();
+        actualizarDocumento();
       });
     }
 
-    // Inicializar datos
-    agregarFilaControl('Mantenimiento preventivo de frenos', 1, 250);
-    agregarFilaControl('Cambio de aceite y filtros', 1, 180);
+    // Filas iniciales
+    agregarFila('Mantenimiento preventivo de frenos', 1, 250);
+    agregarFila('Cambio de aceite sintético y filtro', 1, 180);
   </script>
 </body>
 </html>
