@@ -355,14 +355,6 @@
       </table>
 
       <div class="totals-container">
-        <div class="total-line">
-          <span>Subtotal:</span>
-          <span>S/. <span id="lblSubtotal">0.00</span></span>
-        </div>
-        <div class="total-line">
-          <span>IGV (18%):</span>
-          <span>S/. <span id="lblIgv">0.00</span></span>
-        </div>
         <div class="total-line final">
           <span>TOTAL:</span>
           <span>S/. <span id="lblTotal">0.00</span></span>
@@ -543,7 +535,7 @@
       const cants = document.querySelectorAll('.item-control-row .cant');
       const pus = document.querySelectorAll('.item-control-row .pu');
 
-      let subtotalGeneral = 0;
+      let totalGeneral = 0;
 
       for (let i = 0; i < descs.length; i++) {
         const d = descs[i].value || 'Servicio / Repuesto';
@@ -551,7 +543,7 @@
         const p = parseFloat(pus[i].value) || 0;
         const totalItem = c * p;
 
-        subtotalGeneral += totalItem;
+        totalGeneral += totalItem;
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -563,11 +555,6 @@
         tbody.appendChild(tr);
       }
 
-      const igv = subtotalGeneral * 0.18;
-      const totalGeneral = subtotalGeneral + igv;
-
-      document.getElementById('lblSubtotal').innerText = subtotalGeneral.toFixed(2);
-      document.getElementById('lblIgv').innerText = igv.toFixed(2);
       document.getElementById('lblTotal').innerText = totalGeneral.toFixed(2);
     }
 
