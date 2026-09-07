@@ -15,7 +15,7 @@
             color: #333;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1050px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -102,16 +102,34 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .invoice-box {
             background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
         }
         .invoice-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             border-bottom: 2px solid #007bff;
             padding-bottom: 15px;
             margin-bottom: 20px;
+        }
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-logo-img {
+            max-height: 55px;
+            max-width: 120px;
+            object-fit: contain;
         }
         .company-details h2 {
             margin: 0;
@@ -184,11 +202,40 @@
             border-top: 2px solid #007bff;
         }
         .terms {
-            margin-top: 30px;
+            margin-top: 20px;
             font-size: 11px;
-            color: #777;
+            color: #666;
             border-top: 1px solid #eee;
             padding-top: 10px;
+        }
+
+        /* Tira de Marcas Automotrices en el Footer */
+        .car-brands-footer {
+            margin-top: 30px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 12px;
+            text-align: center;
+        }
+        .car-brands-footer p {
+            margin: 0 0 8px 0;
+            font-size: 10px;
+            color: #888;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .brands-logos-grid {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            filter: grayscale(100%);
+            opacity: 0.75;
+        }
+        .brands-logos-grid img {
+            height: 18px;
+            object-fit: contain;
         }
 
         @media (max-width: 768px) {
@@ -202,11 +249,16 @@
 
 <div class="container">
     
-    <!-- SECCIÓN 1: FORMULARIO -->
+    <!-- SECCIÓN 1: FORMULARIO DE EDICIÓN -->
     <div class="form-section">
         <h2>Generador de Cotización</h2>
         <hr style="border: 1px solid #eee; margin-bottom: 20px;">
         
+        <div class="form-group">
+            <label for="inputLogo">Logo de la Empresa (Opcional):</label>
+            <input type="file" id="inputLogo" accept="image/*" onchange="cargarLogo(event)">
+        </div>
+
         <div class="form-group">
             <label for="inputNumero">N° de Cotización:</label>
             <input type="number" id="inputNumero" value="1" oninput="actualizarCotizacion()">
@@ -242,73 +294,112 @@
         <button class="btn-download" onclick="descargarPDF()">Descargar Cotización en PDF</button>
     </div>
 
-    <!-- SECCIÓN 2: VISTA PREVIA (PDF) -->
+    <!-- SECCIÓN 2: VISTA PREVIA DEL PDF -->
     <div class="preview-section" id="cotizacion-pdf">
         <div class="invoice-box">
-            <div class="invoice-header">
-                <div class="company-details">
-                    <h2>Servicios Generales Kylian</h2>
-                    <p style="margin: 4px 0 0 0; font-size: 12px; color: #666;">Mecánica y Mantenimiento en General</p>
+            <div>
+                <!-- Encabezado con Logo y Título -->
+                <div class="invoice-header">
+                    <div class="brand-container">
+                        <img id="pdfLogoImg" class="brand-logo-img" src="" style="display: none;" alt="Logo Empresa">
+                        <div class="company-details">
+                            <h2>Servicios Generales Kylian</h2>
+                            <p style="margin: 4px 0 0 0; font-size: 12px; color: #666;">Mecánica y Mantenimiento en General</p>
+                        </div>
+                    </div>
+                    <div class="invoice-title">
+                        <h1>COTIZACIÓN</h1>
+                        <div class="num-cotizacion" id="pdfNumero">N° 001</div>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; font-weight: bold; color: #777;" id="fechaActual"></p>
+                    </div>
                 </div>
-                <div class="invoice-title">
-                    <h1>COTIZACIÓN</h1>
-                    <div class="num-cotizacion" id="pdfNumero">N° 001</div>
-                    <p style="margin: 4px 0 0 0; font-size: 12px; font-weight: bold; color: #777;" id="fechaActual"></p>
+
+                <!-- Datos del Cliente -->
+                <div class="client-details">
+                    <h3>Datos del Cliente:</h3>
+                    <p style="margin: 4px 0;"><strong>Cliente:</strong> <span id="pdfCliente">Empresa ABC S.A.C.</span></p>
+                    <p style="margin: 4px 0;"><strong>Atención:</strong> <span id="pdfAtencion">Ing. Juan Pérez</span></p>
                 </div>
-            </div>
 
-            <div class="client-details">
-                <h3>Datos del Cliente:</h3>
-                <p style="margin: 4px 0;"><strong>Cliente:</strong> <span id="pdfCliente">Empresa ABC S.A.C.</span></p>
-                <p style="margin: 4px 0;"><strong>Atención:</strong> <span id="pdfAtencion">Ing. Juan Pérez</span></p>
-            </div>
+                <!-- Tabla de Servicios -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 70%;">Descripción del Servicio</th>
+                            <th style="width: 30%; text-align: right;">Total (S/.)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdfTableBody">
+                        <!-- Filas dinámicas -->
+                    </tbody>
+                </table>
 
-            <table>
-                <thead>
+                <!-- Totales -->
+                <table class="totals-table">
                     <tr>
-                        <th style="width: 70%;">Descripción del Servicio</th>
-                        <th style="width: 30%; text-align: right;">Total (S/.)</th>
+                        <td class="label">Subtotal:</td>
+                        <td class="value">S/. <span id="pdfSubtotal">0.00</span></td>
                     </tr>
-                </thead>
-                <tbody id="pdfTableBody">
-                    <!-- Filas dinámicas -->
-                </tbody>
-            </table>
+                    <tr>
+                        <td class="label">IGV (18%):</td>
+                        <td class="value">S/. <span id="pdfIgv">0.00</span></td>
+                    </tr>
+                    <tr class="grand-total">
+                        <td class="label">Total:</td>
+                        <td class="value">S/. <span id="pdfTotal">0.00</span></td>
+                    </tr>
+                </table>
 
-            <table class="totals-table">
-                <tr>
-                    <td class="label">Subtotal:</td>
-                    <td class="value">S/. <span id="pdfSubtotal">0.00</span></td>
-                </tr>
-                <tr>
-                    <td class="label">IGV (18%):</td>
-                    <td class="value">S/. <span id="pdfIgv">0.00</span></td>
-                </tr>
-                <tr class="grand-total">
-                    <td class="label">Total:</td>
-                    <td class="value">S/. <span id="pdfTotal">0.00</span></td>
-                </tr>
-            </table>
-
-            <div class="terms">
-                <strong>Condiciones Comerciales:</strong>
-                <p style="margin: 4px 0 0 0;">• Forma de pago: A tratar / Según acuerdo comercial.</p>
-                <p style="margin: 2px 0 0 0;">• Tiempo de ejecución: Inmediato tras recepción de la orden de servicio.</p>
-                <p style="margin: 2px 0 0 0;">• Validez de la oferta: 15 días calendario.</p>
+                <!-- Condiciones Comerciales -->
+                <div class="terms">
+                    <strong>Condiciones Comerciales:</strong>
+                    <p style="margin: 4px 0 0 0;">• Forma de pago: A tratar / Según acuerdo comercial.</p>
+                    <p style="margin: 2px 0 0 0;">• Tiempo de ejecución: Inmediato tras recepción de la orden de servicio.</p>
+                    <p style="margin: 2px 0 0 0;">• Validez de la oferta: 15 días calendario.</p>
+                </div>
             </div>
+
+            <!-- PIE DE PÁGINA: LOGOS DE MARCAS AUTOMOTRICES -->
+            <div class="car-brands-footer">
+                <p>Especialistas en la atención y mantenimiento de multimarca</p>
+                <div class="brands-logos-grid">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Toyota_logo_%28Red%29.svg" alt="Toyota">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Hyundai_Motor_Company_logo.svg" alt="Hyundai">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/8c/Nissan_2020_logo.svg" alt="Nissan">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/Chevrolet-logo.svg" alt="Chevrolet">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/KIA_logo_2021.svg" alt="Kia">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Ford_motor_company_logo.svg" alt="Ford">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Volkswagen_logo_2019.svg" alt="Volkswagen">
+                </div>
+            </div>
+
         </div>
     </div>
 
 </div>
 
 <script>
-    // Recuperar el número correlativo guardado en la memoria local del navegador
+    // Recuperar el número correlativo guardado en la memoria local
     let numeroActual = parseInt(localStorage.getItem('numCotizacionKylian')) || 1;
     document.getElementById('inputNumero').value = numeroActual;
 
     // Colocar fecha actual
     const fecha = new Date();
     document.getElementById('fechaActual').innerText = `Fecha: ${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
+
+    // Cargar e incorporar el Logo de la Empresa
+    function cargarLogo(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('pdfLogoImg');
+                img.src = e.target.result;
+                img.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 
     // Agregar nueva fila de servicio
     function agregarFila() {
@@ -333,7 +424,7 @@
     // Actualizar vista previa y correlativo
     function actualizarCotizacion() {
         const num = parseInt(document.getElementById('inputNumero').value) || 1;
-        const numFormateado = "N° " + String(num).padStart(3, '0'); // Convierte 1 en "N° 001"
+        const numFormateado = "N° " + String(num).padStart(3, '0');
         document.getElementById('pdfNumero').innerText = numFormateado;
 
         const cliente = document.getElementById('inputCliente').value;
@@ -373,25 +464,24 @@
     // Inicializar al cargar
     actualizarCotizacion();
 
-    // Descargar PDF y sumar +1 al correlativo
+    // Descargar PDF e incrementar número correlativo
     function descargarPDF() {
         const elemento = document.getElementById('cotizacion-pdf');
         const numCot = String(document.getElementById('inputNumero').value).padStart(3, '0');
         const nombreCliente = document.getElementById('inputCliente').value.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         
         const opciones = {
-            margin:       10,
+            margin:       8,
             filename:     `cotizacion_${numCot}_${nombreCliente}.pdf`,
             image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
+            html2canvas:  { scale: 2, useCORS: true },
             jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
         html2pdf().set(opciones).from(elemento).save().then(() => {
-            // Una vez descargado el PDF, incrementamos la correlación automáticamente
             let siguienteNum = (parseInt(document.getElementById('inputNumero').value) || 1) + 1;
             document.getElementById('inputNumero').value = siguienteNum;
-            localStorage.setItem('numCotizacionKylian', siguienteNum); // Guardar en memoria
+            localStorage.setItem('numCotizacionKylian', siguienteNum);
             actualizarCotizacion();
         });
     }
