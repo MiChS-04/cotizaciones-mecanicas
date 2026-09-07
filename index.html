@@ -95,6 +95,16 @@
             width: 100%;
             font-weight: bold;
         }
+        .btn-delete-logo {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
 
         /* Hoja A4 para PDF */
         .pdf-page {
@@ -213,48 +223,52 @@
             color: #555;
             border-top: 1px solid #ddd;
             padding-top: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         /* Pie con Logos Multimarca */
         .footer-brands {
             border-top: 1px solid #e0e0e0;
-            padding-top: 10px;
+            padding-top: 8px;
             text-align: center;
         }
         .footer-brands p {
-            margin: 0 0 10px 0;
-            font-size: 9.5px;
-            color: #777;
+            margin: 0 0 8px 0;
+            font-size: 9px;
+            color: #666;
             font-weight: bold;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
-        .brand-logos-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
+        .brand-logos-grid {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
         }
-        .brand-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 55px;
-            height: 35px;
+        .brand-cell {
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            padding: 2px 4px;
         }
-        .brand-item svg {
-            max-width: 45px;
-            max-height: 25px;
-            fill: #495057;
+        .brand-badge-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 4px 2px;
+            background: #fafafa;
         }
-        .brand-item span {
-            font-size: 8px;
+        .brand-badge-box img {
+            max-width: 32px;
+            max-height: 20px;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto 2px auto;
+        }
+        .brand-badge-box span {
+            display: block;
+            font-size: 7.5px;
             font-weight: bold;
-            color: #555;
-            margin-top: 2px;
+            color: #333;
         }
 
         @media print {
@@ -276,8 +290,9 @@
             <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 15px;">
             
             <div class="form-group">
-                <label for="inputLogo">Logo de Empresa (Opcional):</label>
+                <label for="inputLogo">Logo de Empresa (Se guarda permanentemente):</label>
                 <input type="file" id="inputLogo" accept="image/*" onchange="cargarLogo(event)">
+                <button id="btnRemoveLogo" class="btn-delete-logo" onclick="borrarLogoGuardado()" style="display:none;">Quitar Logo Guardado</button>
             </div>
 
             <div class="form-group">
@@ -325,7 +340,7 @@
                 <tr>
                     <td style="width: 60%;">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <img id="pdfLogoImg" src="" style="display:none; max-height: 50px; max-width: 90px; object-fit: contain;">
+                            <img id="pdfLogoImg" src="" style="display:none; max-height: 55px; max-width: 100px; object-fit: contain;">
                             <div>
                                 <div class="company-title">Servicios Generales Kylian</div>
                                 <div class="company-subtitle">Mecánica y Mantenimiento en General</div>
@@ -386,54 +401,63 @@
                 <div>• Validez de la oferta: 15 días calendario.</div>
             </div>
 
-            <!-- Pie con Logos Multimarca SVG Integrados -->
+            <!-- Pie con Logos Multimarca Claros con Imagen y Nombre -->
             <div class="footer-brands">
-                <p>Especialistas en atención y mantenimiento multimarca</p>
-                <div class="brand-logos-container">
-                    <!-- Toyota -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><ellipse cx="50" cy="30" rx="45" ry="25" fill="none" stroke="#333" stroke-width="4"/><ellipse cx="50" cy="20" rx="28" ry="12" fill="none" stroke="#333" stroke-width="4"/><ellipse cx="50" cy="32" rx="12" ry="18" fill="none" stroke="#333" stroke-width="4"/></svg>
-                        <span>TOYOTA</span>
+                <p>ESPECIALISTAS EN ATENCIÓN Y MANTENIMIENTO MULTIMARCA</p>
+                <div class="brand-logos-grid">
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/toyota/eb000d" alt="Toyota">
+                            <span>TOYOTA</span>
+                        </div>
                     </div>
-                    <!-- Nissan -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><circle cx="50" cy="30" r="24" fill="none" stroke="#333" stroke-width="5"/><rect x="15" y="24" width="70" height="12" fill="#333"/><text x="50" y="33" font-size="8" fill="#fff" font-weight="bold" text-anchor="middle">NISSAN</text></svg>
-                        <span>NISSAN</span>
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/hyundai/002c5f" alt="Hyundai">
+                            <span>HYUNDAI</span>
+                        </div>
                     </div>
-                    <!-- Hyundai -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><ellipse cx="50" cy="30" rx="40" ry="22" fill="none" stroke="#333" stroke-width="4"/><path d="M35 18 L35 42 M65 18 L65 42 M35 30 L65 24" stroke="#333" stroke-width="5" stroke-linecap="round"/></svg>
-                        <span>HYUNDAI</span>
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/nissan/000000" alt="Nissan">
+                            <span>NISSAN</span>
+                        </div>
                     </div>
-                    <!-- Chevrolet -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><path d="M20 25 L80 25 L80 35 L20 35 Z M40 15 L60 15 L60 45 L40 45 Z" fill="#333"/></svg>
-                        <span>CHEVROLET</span>
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/chevrolet/cd9834" alt="Chevrolet">
+                            <span>CHEVROLET</span>
+                        </div>
                     </div>
-                    <!-- Kia -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><ellipse cx="50" cy="30" rx="42" ry="20" fill="none" stroke="#333" stroke-width="4"/><text x="50" y="36" font-size="16" fill="#333" font-weight="900" font-family="sans-serif" text-anchor="middle" letter-spacing="1">KIA</text></svg>
-                        <span>KIA</span>
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/kia/05141f" alt="Kia">
+                            <span>KIA</span>
+                        </div>
                     </div>
-                    <!-- Ford -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><ellipse cx="50" cy="30" rx="42" ry="20" fill="none" stroke="#333" stroke-width="4"/><text x="50" y="35" font-size="14" font-style="italic" fill="#333" font-weight="bold" text-anchor="middle">Ford</text></svg>
-                        <span>FORD</span>
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/ford/102b72" alt="Ford">
+                            <span>FORD</span>
+                        </div>
                     </div>
-                    <!-- Volkswagen -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><circle cx="50" cy="30" r="24" fill="none" stroke="#333" stroke-width="4"/><path d="M34 18 L43 36 L50 22 L57 36 L66 18 M38 42 L50 25 L62 42" fill="none" stroke="#333" stroke-width="3"/></svg>
-                        <span>VOLKSWAGEN</span>
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/volkswagen/001e50" alt="Volkswagen">
+                            <span>VOLKSWAGEN</span>
+                        </div>
                     </div>
-                    <!-- Isuzu -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><text x="50" y="36" font-size="15" fill="#333" font-weight="900" font-family="sans-serif" text-anchor="middle" letter-spacing="2">ISUZU</text></svg>
-                        <span>ISUZU</span>
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/isuzu/e21b22" alt="Isuzu">
+                            <span>ISUZU</span>
+                        </div>
                     </div>
-                    <!-- Mitsubishi -->
-                    <div class="brand-item">
-                        <svg viewBox="0 0 100 60"><polygon points="50,12 40,28 60,28" fill="#333"/><polygon points="40,28 20,28 30,44" fill="#333"/><polygon points="60,28 80,28 70,44" fill="#333"/></svg>
-                        <span>MITSUBISHI</span>
+                    <div class="brand-cell">
+                        <div class="brand-badge-box">
+                            <img src="https://cdn.simpleicons.org/mitsubishi/e60012" alt="Mitsubishi">
+                            <span>MITSUBISHI</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -444,7 +468,7 @@
 </div>
 
 <script>
-    // Recuperar correlativo local
+    // 1. Cargar Correlativo Guardado
     let numeroActual = parseInt(localStorage.getItem('numCotizacionKylian')) || 1;
     document.getElementById('inputNumero').value = numeroActual;
 
@@ -452,19 +476,43 @@
     const fecha = new Date();
     document.getElementById('fechaActual').innerText = `Fecha: ${fecha.getDate()}/${fecha.getMonth()+1}/${fecha.getFullYear()}`;
 
-    // Cargar logo
+    // 2. Cargar Logo Guardado en LocalStorage
+    function inicializarLogoGuardado() {
+        const savedLogo = localStorage.getItem('logoEmpresaKylian');
+        const img = document.getElementById('pdfLogoImg');
+        const btnDelete = document.getElementById('btnRemoveLogo');
+        if (savedLogo) {
+            img.src = savedLogo;
+            img.style.display = 'block';
+            btnDelete.style.display = 'inline-block';
+        } else {
+            img.src = '';
+            img.style.display = 'none';
+            btnDelete.style.display = 'none';
+        }
+    }
+
     function cargarLogo(event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = document.getElementById('pdfLogoImg');
-                img.src = e.target.result;
-                img.style.display = 'block';
+                const base64Data = e.target.result;
+                // Guardar en el navegador
+                localStorage.setItem('logoEmpresaKylian', base64Data);
+                inicializarLogoGuardado();
             }
             reader.readAsDataURL(file);
         }
     }
+
+    function borrarLogoGuardado() {
+        localStorage.removeItem('logoEmpresaKylian');
+        document.getElementById('inputLogo').value = '';
+        inicializarLogoGuardado();
+    }
+
+    inicializarLogoGuardado();
 
     // Filas
     function agregarFila() {
