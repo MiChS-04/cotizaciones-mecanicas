@@ -318,8 +318,9 @@
     <div class="document-preview" id="documentoPDF">
       <div class="doc-header">
         <div class="logo-container">
-          <!-- LOGO TALLER EN CANVAS -->
-          <canvas id="canvasKylian" width="180" height="70"></canvas>
+          <!-- RUTA DE TU LOGO (Remplaza logo_kylian.png con tu archivo) -->
+          <img src="logo_kylian.png" alt="Logo Servicios Generales Kylian" style="max-height: 70px; width: auto; display: block;">
+          
           <div class="company-details">
             <h1>Servicios Generales Kylian</h1>
             <p>Mecánica Multimarca & Mantenimiento General</p>
@@ -377,7 +378,7 @@
         </ul>
       </div>
 
-      <!-- FRANJA INFERIOR MARCAS (MANTENIDA) -->
+      <!-- FRANJA INFERIOR MARCAS -->
       <div class="footer-brands-section">
         <div class="footer-brands-title">Especialistas en Atención y Mantenimiento Multimarca</div>
         <div class="brands-grid">
@@ -437,45 +438,8 @@
     const fecha = new Date();
     document.getElementById('lblFecha').innerText = 'Fecha: ' + fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear();
 
-    // DIBUJO DE LOGOS EN CANVAS NATIVO
+    // DIBUJO DE LOGOS MULTIMARCA EN CANVAS
     function renderizarLogos() {
-      // 1. LOGO PRINCIPAL DEL TALLER (KYLIAN) - CORREGIDO PARA QUE APAREZCA SIEMPRE
-      const cK = document.getElementById('canvasKylian');
-      if (cK) {
-        const ctxK = cK.getContext('2d');
-        
-        // Fondo Azul con bordes rectos (100% compatible)
-        ctxK.fillStyle = '#0f4c81';
-        ctxK.fillRect(0, 0, 180, 70);
-
-        // Círculo dentado/puntos amarillos
-        ctxK.strokeStyle = '#f1c40f';
-        ctxK.lineWidth = 2.5;
-        ctxK.setLineDash([4, 3]);
-        ctxK.beginPath();
-        ctxK.arc(36, 35, 18, 0, Math.PI * 2);
-        ctxK.stroke();
-        ctxK.setLineDash([]);
-
-        // Cruz / MIRA CELESTE EN EL CENTRO
-        ctxK.strokeStyle = '#00d2ff';
-        ctxK.lineWidth = 3.5;
-        ctxK.beginPath();
-        ctxK.moveTo(27, 35); ctxK.lineTo(45, 35);
-        ctxK.moveTo(36, 26); ctxK.lineTo(36, 44);
-        ctxK.stroke();
-
-        // Textos Taller
-        ctxK.fillStyle = '#ffffff';
-        ctxK.font = 'bold 11px Arial';
-        ctxK.fillText('SERVICIOS', 65, 31);
-        
-        ctxK.fillStyle = '#f1c40f';
-        ctxK.font = 'bold 17px Arial';
-        ctxK.fillText('KYLIAN', 65, 50);
-      }
-
-      // 2. LOGOS MULTIMARCA
       // Toyota
       const cToy = document.getElementById('cToyota').getContext('2d');
       cToy.strokeStyle = '#eb0a1e'; cToy.lineWidth = 3;
