@@ -128,7 +128,7 @@
     .logo-container {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 15px;
     }
     .company-details h1 {
       font-size: 17px;
@@ -318,7 +318,8 @@
     <div class="document-preview" id="documentoPDF">
       <div class="doc-header">
         <div class="logo-container">
-          <canvas id="canvasKylian" width="160" height="65"></canvas>
+          <!-- LOGO TALLER EN CANVAS -->
+          <canvas id="canvasKylian" width="180" height="70"></canvas>
           <div class="company-details">
             <h1>Servicios Generales Kylian</h1>
             <p>Mecánica Multimarca & Mantenimiento General</p>
@@ -376,7 +377,7 @@
         </ul>
       </div>
 
-      <!-- FRANJA INFERIOR MARCAS CON CANVAS -->
+      <!-- FRANJA INFERIOR MARCAS -->
       <div class="footer-brands-section">
         <div class="footer-brands-title">Especialistas en Atención y Mantenimiento Multimarca</div>
         <div class="brands-grid">
@@ -436,53 +437,60 @@
     const fecha = new Date();
     document.getElementById('lblFecha').innerText = 'Fecha: ' + fecha.getDate() + '/' + (fecha.getMonth() + 1) + '/' + fecha.getFullYear();
 
-    // DIBUJAR LOGOS EN CANVAS NATIVO (100% COMPATIBLE CON PDF)
+    // DIBUJO DE LOGOS EN CANVAS NATIVO
     function renderizarLogos() {
-      // 1. Logo Kylian
+      // 1. LOGO PRINCIPAL DEL TALLER (KYLIAN)
       const cK = document.getElementById('canvasKylian');
       const ctxK = cK.getContext('2d');
-      ctxK.fillStyle = '#0d47a1';
+      
+      // Fondo Azul
+      ctxK.fillStyle = '#0f4c81';
       ctxK.beginPath();
-      ctxK.roundRect(0, 0, 160, 65, 6);
+      ctxK.roundRect(0, 0, 180, 70, 8);
       ctxK.fill();
 
-      ctxK.strokeStyle = '#ffca28';
-      ctxK.lineWidth = 3;
-      ctxK.setLineDash([5, 3]);
+      // Círculo dentado/puntos amarillos
+      ctxK.strokeStyle = '#f1c40f';
+      ctxK.lineWidth = 2.5;
+      ctxK.setLineDash([4, 3]);
       ctxK.beginPath();
-      ctxK.arc(30, 32, 16, 0, Math.PI * 2);
+      ctxK.arc(36, 35, 18, 0, Math.PI * 2);
       ctxK.stroke();
       ctxK.setLineDash([]);
 
-      ctxK.strokeStyle = '#00bcd4';
-      ctxK.lineWidth = 4;
+      // Cruz / MIRA CELESTE EN EL CENTRO
+      ctxK.strokeStyle = '#00d2ff';
+      ctxK.lineWidth = 3.5;
       ctxK.beginPath();
-      ctxK.moveTo(23, 32); ctxK.lineTo(37, 32);
-      ctxK.moveTo(30, 25); ctxK.lineTo(30, 39);
+      ctxK.moveTo(27, 35); ctxK.lineTo(45, 35);
+      ctxK.moveTo(36, 26); ctxK.lineTo(36, 44);
       ctxK.stroke();
 
+      // Textos
       ctxK.fillStyle = '#ffffff';
-      ctxK.font = 'bold 10px Arial';
-      ctxK.fillText('SERVICIOS', 55, 30);
-      ctxK.fillStyle = '#ffca28';
-      ctxK.font = 'bold 15px Arial';
-      ctxK.fillText('KYLIAN', 55, 48);
+      ctxK.font = 'bold 11px Arial';
+      ctxK.fillText('SERVICIOS', 65, 31);
+      
+      ctxK.fillStyle = '#f1c40f';
+      ctxK.font = 'bold 17px Arial';
+      ctxK.fillText('KYLIAN', 65, 50);
 
-      // 2. Toyota
+      // 2. LOGOS MULTIMARCA
+      // Toyota
       const cToy = document.getElementById('cToyota').getContext('2d');
       cToy.strokeStyle = '#eb0a1e'; cToy.lineWidth = 3;
       cToy.beginPath(); cToy.ellipse(35, 17, 28, 14, 0, 0, Math.PI * 2); cToy.stroke();
       cToy.beginPath(); cToy.ellipse(35, 12, 18, 6, 0, 0, Math.PI * 2); cToy.stroke();
       cToy.beginPath(); cToy.ellipse(35, 17, 7, 14, 0, 0, Math.PI * 2); cToy.stroke();
 
-      // 3. Hyundai
+      // Hyundai
       const cHyu = document.getElementById('cHyundai').getContext('2d');
       cHyu.strokeStyle = '#002c6c'; cHyu.lineWidth = 3;
       cHyu.beginPath(); cHyu.ellipse(35, 17, 28, 14, 0, 0, Math.PI * 2); cHyu.stroke();
       cHyu.font = 'bold italic 22px Arial'; cHyu.fillStyle = '#002c6c';
       cHyu.fillText('H', 26, 25);
 
-      // 4. Nissan
+      // Nissan
       const cNis = document.getElementById('cNissan').getContext('2d');
       cNis.strokeStyle = '#c00000'; cNis.lineWidth = 3;
       cNis.beginPath(); cNis.arc(35, 17, 13, 0, Math.PI * 2); cNis.stroke();
@@ -490,7 +498,7 @@
       cNis.fillStyle = '#ffffff'; cNis.font = 'bold 7px Arial';
       cNis.fillText('NISSAN', 15, 20);
 
-      // 5. Chevrolet
+      // Chevrolet
       const cChe = document.getElementById('cChevrolet').getContext('2d');
       cChe.fillStyle = '#d4af37'; cChe.strokeStyle = '#996515'; cChe.lineWidth = 1;
       cChe.beginPath();
@@ -500,14 +508,14 @@
       cChe.lineTo(26, 26); cChe.lineTo(26, 20); cChe.lineTo(10, 20);
       cChe.closePath(); cChe.fill(); cChe.stroke();
 
-      // 6. Kia
+      // Kia
       const cKia = document.getElementById('cKia').getContext('2d');
       cKia.strokeStyle = '#bb162b'; cKia.lineWidth = 3;
       cKia.beginPath(); cKia.ellipse(35, 17, 28, 13, 0, 0, Math.PI * 2); cKia.stroke();
       cKia.fillStyle = '#bb162b'; cKia.font = '900 15px Arial';
       cKia.fillText('KIA', 21, 22);
 
-      // 7. Ford
+      // Ford
       const cFor = document.getElementById('cFord').getContext('2d');
       cFor.fillStyle = '#1c3b6f';
       cFor.beginPath(); cFor.ellipse(35, 17, 30, 14, 0, 0, Math.PI * 2); cFor.fill();
@@ -516,7 +524,7 @@
       cFor.fillStyle = '#ffffff'; cFor.font = 'italic bold 13px Georgia';
       cFor.fillText('Ford', 22, 21);
 
-      // 8. Volkswagen
+      // Volkswagen
       const cVw = document.getElementById('cVolkswagen').getContext('2d');
       cVw.fillStyle = '#1b365d';
       cVw.beginPath(); cVw.arc(35, 17, 15, 0, Math.PI * 2); cVw.fill();
@@ -525,14 +533,14 @@
       cVw.font = 'bold 11px Arial'; cVw.fillStyle = '#ffffff';
       cVw.fillText('W', 29, 22);
 
-      // 9. Mitsubishi
+      // Mitsubishi
       const cMit = document.getElementById('cMitsubishi').getContext('2d');
       cMit.fillStyle = '#d50000';
       cMit.beginPath(); cMit.moveTo(35, 5); cMit.lineTo(28, 17); cMit.lineTo(42, 17); cMit.fill();
       cMit.beginPath(); cMit.moveTo(28, 17); cMit.lineTo(14, 17); cMit.lineTo(21, 29); cMit.fill();
       cMit.beginPath(); cMit.moveTo(42, 17); cMit.lineTo(56, 17); cMit.lineTo(49, 29); cMit.fill();
 
-      // 10. Isuzu
+      // Isuzu
       const cIsu = document.getElementById('cIsuzu').getContext('2d');
       cIsu.fillStyle = '#cc0000'; cIsu.font = '900 13px Arial';
       cIsu.fillText('ISUZU', 15, 22);
@@ -618,7 +626,7 @@
       });
     }
 
-    // Inicializar Dibujos y Filas
+    // Cargar Dibujos y Datos Iniciales
     window.onload = function() {
       renderizarLogos();
       agregarFila('Mantenimiento preventivo de frenos', 1, 250);
