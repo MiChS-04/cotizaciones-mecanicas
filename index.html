@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Cotización - Servicios Generales Kylian</title>
+  <title>Cotizador - Servicios Generales Kylian</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
     }
     body {
-      background-color: #525659;
+      background-color: #4a4d50;
       padding: 20px;
     }
-    .main-wrapper {
+    .layout-container {
       display: flex;
       gap: 20px;
       max-width: 1400px;
@@ -24,68 +24,68 @@
       align-items: flex-start;
     }
 
-    /* PANEL IZQUIERDO: CONTROLES */
-    .panel-control {
-      width: 420px;
+    /* CONTROLES IZQUIERDA */
+    .control-panel {
+      width: 400px;
       background: #ffffff;
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       flex-shrink: 0;
     }
-    .panel-control h2 {
+    .control-panel h2 {
       font-size: 18px;
       color: #0d47a1;
       margin-bottom: 15px;
       border-bottom: 2px solid #0d47a1;
       padding-bottom: 5px;
     }
-    .form-group {
+    .field-group {
       margin-bottom: 12px;
     }
-    .form-group label {
+    .field-group label {
       display: block;
       font-size: 12px;
       font-weight: bold;
       margin-bottom: 4px;
       color: #333;
     }
-    .form-group input {
+    .field-group input {
       width: 100%;
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 13px;
     }
-    .items-title {
+    .section-subtitle {
       font-weight: bold;
-      font-size: 14px;
+      font-size: 13px;
       margin-top: 15px;
       margin-bottom: 10px;
-      color: #333;
+      color: #0d47a1;
     }
-    .item-control-row {
+    .item-ctrl-row {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       margin-bottom: 8px;
       align-items: center;
     }
-    .item-control-row input.desc { flex: 2; }
-    .item-control-row input.cant { width: 60px; text-align: center; }
-    .item-control-row input.pu { width: 85px; text-align: right; }
-    .btn-del {
+    .item-ctrl-row input.desc { flex: 2; }
+    .item-ctrl-row input.cant { width: 55px; text-align: center; }
+    .item-ctrl-row input.pu { width: 80px; text-align: right; }
+    .btn-remove {
       background: #dc3545;
       color: white;
       border: none;
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 4px;
       cursor: pointer;
       font-weight: bold;
     }
-    .btn-add {
+    .btn-add-item {
       width: 100%;
-      padding: 10px;
+      padding: 9px;
       background-color: #28a745;
       color: white;
       border: none;
@@ -95,7 +95,7 @@
       margin-top: 5px;
       margin-bottom: 15px;
     }
-    .btn-download {
+    .btn-pdf {
       width: 100%;
       padding: 12px;
       background-color: #0d47a1;
@@ -107,21 +107,21 @@
       cursor: pointer;
     }
 
-    /* DOCUMENTO A4 DE VISTA PREVIA / PDF */
-    .paper-preview {
+    /* DOCUMENTO DERECHA (HOJA A4) */
+    .sheet-preview {
       flex: 1;
       background: #ffffff;
       padding: 40px;
       border-radius: 4px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      min-height: 900px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      min-height: 950px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    /* ENCABEZADO */
-    .doc-header {
+    /* ENCABEZADO DOCUMENTO */
+    .header-doc {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -129,336 +129,337 @@
       padding-bottom: 15px;
       margin-bottom: 20px;
     }
-    .header-left {
+    .brand-box {
       display: flex;
       align-items: center;
       gap: 15px;
     }
-    .header-left img {
-      max-height: 75px;
-      width: auto;
+    .brand-box img {
+      max-height: 80px;
+      max-width: 180px;
+      object-fit: contain;
     }
-    .company-info h1 {
+    .brand-text h1 {
       font-size: 20px;
       color: #0d47a1;
       font-weight: 800;
       text-transform: uppercase;
     }
-    .company-info p {
-      font-size: 12px;
+    .brand-text p {
+      font-size: 11px;
       color: #555;
     }
-    .header-right {
+    .doc-info {
       text-align: right;
     }
-    .header-right h2 {
+    .doc-info h2 {
       font-size: 22px;
-      color: #333;
-      margin-bottom: 5px;
+      color: #222;
     }
-    .header-right .cot-number {
+    .doc-info .num {
       font-size: 16px;
       font-weight: bold;
       color: #d32f2f;
+      margin-top: 3px;
     }
-    .header-right .cot-date {
+    .doc-info .date {
       font-size: 12px;
       color: #666;
     }
 
     /* CLIENTE */
-    .client-section {
+    .client-box {
       background-color: #f8f9fa;
       border-left: 4px solid #0d47a1;
-      padding: 12px 15px;
+      padding: 10px 15px;
       margin-bottom: 20px;
-      font-size: 13px;
+      font-size: 12px;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 6px;
     }
-    .client-section div strong { color: #0d47a1; }
+    .client-box strong { color: #0d47a1; }
 
-    /* TABLA DE DETALLE */
-    .doc-table {
+    /* TABLA DE PRODUCTOS / SERVICIOS */
+    .table-detail {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
     }
-    .doc-table th {
+    .table-detail th {
       background-color: #0d47a1;
       color: white;
-      padding: 8px 10px;
+      padding: 8px;
       font-size: 12px;
       text-align: left;
     }
-    .doc-table th.center, .doc-table td.center { text-align: center; }
-    .doc-table th.right, .doc-table td.right { text-align: right; }
-    .doc-table td {
-      padding: 8px 10px;
+    .table-detail th.center, .table-detail td.center { text-align: center; }
+    .table-detail th.right, .table-detail td.right { text-align: right; }
+    .table-detail td {
+      padding: 8px;
       border-bottom: 1px solid #e0e0e0;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     /* TOTALES */
-    .doc-totals {
-      width: 280px;
+    .totals-box {
+      width: 260px;
       margin-left: auto;
-      margin-bottom: 30px;
-      font-size: 13px;
+      margin-bottom: 25px;
+      font-size: 12px;
     }
-    .totals-row {
+    .t-row {
       display: flex;
       justify-content: space-between;
-      padding: 4px 0;
+      padding: 3px 0;
     }
-    .totals-row.grand-total {
+    .t-row.final {
       border-top: 2px solid #0d47a1;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 14px;
       color: #0d47a1;
-      padding-top: 6px;
-      margin-top: 4px;
+      padding-top: 5px;
+      margin-top: 3px;
     }
 
     /* CONDICIONES */
-    .doc-terms {
+    .terms-section {
       font-size: 11px;
       color: #555;
       border-top: 1px solid #ddd;
       padding-top: 10px;
       margin-bottom: 20px;
     }
-    .doc-terms h4 {
-      font-size: 12px;
+    .terms-section h4 {
+      font-size: 11px;
       color: #333;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
-    .doc-terms ul {
+    .terms-section ul {
       padding-left: 15px;
     }
 
-    /* PIE DE PÁGINA MULTIMARCA */
-    .multimarca-footer {
+    /* FRANJA MULTIMARCA INFERIOR */
+    .brands-footer {
       border-top: 2px solid #0d47a1;
       padding-top: 10px;
       text-align: center;
     }
-    .multimarca-title {
-      font-size: 11px;
+    .brands-title {
+      font-size: 10px;
       font-weight: bold;
       color: #0d47a1;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       letter-spacing: 0.5px;
     }
-    .brands-list {
+    .brands-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
     }
-    .brand-item {
+    .brand-badge {
       border: 1px solid #ccc;
       border-radius: 4px;
-      padding: 4px 6px;
-      font-size: 10px;
+      padding: 3px 5px;
+      font-size: 9px;
       font-weight: bold;
       color: #333;
-      background: #f9f9f9;
+      background: #fdfdfd;
       flex: 1;
       text-align: center;
     }
 
-    /* Ocultar elementos de control durante la impresión */
+    /* OCULTAR ELEMENTOS NO DESEADOS AL ENVIAR A PDF */
     @media print {
       .no-print { display: none !important; }
       body { background: white; padding: 0; }
-      .paper-preview { box-shadow: none; padding: 20px; }
+      .sheet-preview { box-shadow: none; padding: 20px; }
     }
   </style>
 </head>
 <body>
 
-  <div class="main-wrapper">
-    <div class="panel-control no-print">
-      <h2>Panel de Cotización</h2>
+  <div class="layout-container">
+    <div class="control-panel no-print">
+      <h2>Panel de Edición</h2>
 
-      <div class="form-group">
-        <label>Cargar Logo del Taller (Opcional):</label>
-        <input type="file" accept="image/*" onchange="subirLogoCustom(event)">
+      <div class="field-group">
+        <label>Cargar Logo de Taller:</label>
+        <input type="file" accept="image/*" onchange="actualizarLogo(event)">
       </div>
 
-      <div class="form-group">
+      <div class="field-group">
         <label>N° de Cotización:</label>
-        <input type="number" id="inNumero" value="20" oninput="renderizarDoc()">
+        <input type="number" id="ctrlNumero" value="20" oninput="actualizarDocumento()">
       </div>
 
-      <div class="form-group">
-        <label>Cliente / Razón Social:</label>
-        <input type="text" id="inCliente" value="EMPRESA ABC S.A.C." oninput="renderizarDoc()">
+      <div class="field-group">
+        <label>Cliente / Empresa:</label>
+        <input type="text" id="ctrlCliente" value="EMPRESA ABC S.A.C." oninput="actualizarDocumento()">
       </div>
 
-      <div class="form-group">
-        <label>Persona de Contacto / Atención:</label>
-        <input type="text" id="inContacto" value="Ing. Juan Pérez" oninput="renderizarDoc()">
+      <div class="field-group">
+        <label>Persona de Contacto:</label>
+        <input type="text" id="ctrlContacto" value="Ing. Juan Pérez" oninput="actualizarDocumento()">
       </div>
 
-      <div class="form-group">
-        <label>Teléfono Cliente:</label>
-        <input type="text" id="inTelefono" value="987 654 321" oninput="renderizarDoc()">
+      <div class="field-group">
+        <label>Teléfono:</label>
+        <input type="text" id="ctrlTelefono" value="987 654 321" oninput="actualizarDocumento()">
       </div>
 
-      <div class="items-title">Servicios / Repuestos:</div>
-      <div id="itemsContainer"></div>
+      <div class="section-subtitle">Ítems de Cotización:</div>
+      <div id="ctrlItemsList"></div>
 
-      <button class="btn-add" onclick="agregarFilaControl('Servicio de Mantenimiento', 1, 350)">+ Agregar Ítem</button>
-      <button class="btn-download" onclick="exportarPDF()">Descargar Cotización (PDF)</button>
+      <button class="btn-add-item" onclick="agregarItem('Mantenimiento Mecánico', 1, 250)">+ Agregar Ítem</button>
+      <button class="btn-pdf" onclick="descargarPDF()">Descargar PDF</button>
     </div>
 
-    <div class="paper-preview" id="documentoCotizacion">
+    <div class="sheet-preview" id="hojaCotizacion">
       <div>
-        <div class="doc-header">
-          <div class="header-left">
-            <img id="imgLogoHeader" src="" alt="Logo">
-            <div class="company-info">
+        <div class="header-doc">
+          <div class="brand-box">
+            <img id="imgLogo" src="" alt="Logo Taller">
+            <div class="brand-text">
               <h1>Servicios Generales Kylian</h1>
-              <p>Mecánica Multimarca y Mantenimiento General</p>
+              <p>Mecánica Multimarca & Mantenimiento General</p>
               <p>RUC: 10458796321 | Tel: +51 987 654 321</p>
             </div>
           </div>
-          <div class="header-right">
+          <div class="doc-info">
             <h2>COTIZACIÓN</h2>
-            <div class="cot-number" id="lblNumeroDoc">N° 020</div>
-            <div class="cot-date" id="lblFechaDoc">Fecha: --/--/----</div>
+            <div class="num" id="docNumero">N° 020</div>
+            <div class="date" id="docFecha">Fecha: --/--/----</div>
           </div>
         </div>
 
-        <div class="client-section">
-          <div><strong>CLIENTE:</strong> <span id="lblClienteDoc">EMPRESA ABC S.A.C.</span></div>
-          <div><strong>ATENCIÓN:</strong> <span id="lblContactoDoc">Ing. Juan Pérez</span></div>
-          <div><strong>TELÉFONO:</strong> <span id="lblTelefonoDoc">987 654 321</span></div>
+        <div class="client-box">
+          <div><strong>CLIENTE:</strong> <span id="docCliente">EMPRESA ABC S.A.C.</span></div>
+          <div><strong>ATENCIÓN:</strong> <span id="docContacto">Ing. Juan Pérez</span></div>
+          <div><strong>TELÉFONO:</strong> <span id="docTelefono">987 654 321</span></div>
           <div><strong>MONEDA:</strong> Soles (S/.)</div>
         </div>
 
-        <table class="doc-table">
+        <table class="table-detail">
           <thead>
             <tr>
-              <th>DESCRIPCIÓN DEL SERVICIO / REPUESTO</th>
-              <th class="center" style="width: 70px;">CANT.</th>
-              <th class="right" style="width: 110px;">P. UNIT (S/.)</th>
-              <th class="right" style="width: 110px;">TOTAL (S/.)</th>
+              <th>DESCRIPCIÓN DE SERVICIO / REPUESTO</th>
+              <th class="center" style="width: 65px;">CANT.</th>
+              <th class="right" style="width: 100px;">P. UNIT (S/.)</th>
+              <th class="right" style="width: 100px;">TOTAL (S/.)</th>
             </tr>
           </thead>
-          <tbody id="tbodyServiciosDoc">
+          <tbody id="docTbody">
             </tbody>
         </table>
 
-        <div class="doc-totals">
-          <div class="totals-row">
+        <div class="totals-box">
+          <div class="t-row">
             <span>Subtotal:</span>
-            <span>S/. <span id="lblSubtotal">0.00</span></span>
+            <span>S/. <span id="docSubtotal">0.00</span></span>
           </div>
-          <div class="totals-row">
+          <div class="t-row">
             <span>IGV (18%):</span>
-            <span>S/. <span id="lblIgv">0.00</span></span>
+            <span>S/. <span id="docIgv">0.00</span></span>
           </div>
-          <div class="totals-row grand-total">
+          <div class="t-row final">
             <span>TOTAL:</span>
-            <span>S/. <span id="lblTotal">0.00</span></span>
+            <span>S/. <span id="docTotal">0.00</span></span>
           </div>
         </div>
 
-        <div class="doc-terms">
+        <div class="terms-section">
           <h4>Condiciones Comerciales:</h4>
           <ul>
-            <li>Forma de Pago: Según acuerdo comercial / Facturación acordada.</li>
-            <li>Garantía de servicio en trabajos de mecánica y repuestos instalados.</li>
-            <li>Validez de la cotización: 15 días calendario.</li>
+            <li>Forma de pago: Según acuerdo comercial.</li>
+            <li>Garantía en mano de obra y repuestos especificados.</li>
+            <li>Validez de la oferta: 15 días calendario.</li>
           </ul>
         </div>
       </div>
 
-      <div class="multimarca-footer">
-        <div class="multimarca-title">ATENCIÓN Y MANTENIMIENTO ESPECIALIZADO MULTIMARCA</div>
-        <div class="brands-list">
-          <div class="brand-item">TOYOTA</div>
-          <div class="brand-item">HYUNDAI</div>
-          <div class="brand-item">NISSAN</div>
-          <div class="brand-item">CHEVROLET</div>
-          <div class="brand-item">KIA</div>
-          <div class="brand-item">FORD</div>
-          <div class="brand-item">VOLKSWAGEN</div>
-          <div class="brand-item">MITSUBISHI</div>
-          <div class="brand-item">ISUZU</div>
+      <div class="brands-footer">
+        <div class="brands-title">ESPECIALISTAS EN ATENCIÓN Y MANTENIMIENTO MULTIMARCA</div>
+        <div class="brands-row">
+          <div class="brand-badge">TOYOTA</div>
+          <div class="brand-badge">HYUNDAI</div>
+          <div class="brand-badge">NISSAN</div>
+          <div class="brand-badge">CHEVROLET</div>
+          <div class="brand-badge">KIA</div>
+          <div class="brand-badge">FORD</div>
+          <div class="brand-badge">VOLKSWAGEN</div>
+          <div class="brand-badge">MITSUBISHI</div>
+          <div class="brand-badge">ISUZU</div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Logo en SVG seguro (Evita errores de Base64 cortado)
-    const logoBase64SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='70' viewBox='0 0 160 70'><rect width='160' height='70' rx='8' fill='%230d47a1'/><text x='50%' y='40%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Arial' font-size='16' font-weight='bold'>SERVICIOS</text><text x='50%' y='65%' dominant-baseline='middle' text-anchor='middle' fill='%23ffca28' font-family='Arial' font-size='14' font-weight='bold'>KYLIAN</text></svg>";
+    // Logo por defecto en SVG
+    const logoPlaceholder = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='60' viewBox='0 0 150 60'><rect width='150' height='60' rx='6' fill='%230d47a1'/><text x='50%' y='40%' dominant-baseline='middle' text-anchor='middle' fill='%23ffffff' font-family='Arial' font-size='14' font-weight='bold'>SERVICIOS</text><text x='50%' y='68%' dominant-baseline='middle' text-anchor='middle' fill='%23ffca28' font-family='Arial' font-size='12' font-weight='bold'>KYLIAN</text></svg>";
 
-    // Inicializar fecha
-    const hoy = new Date();
-    document.getElementById('lblFechaDoc').innerText = 'Fecha: ' + hoy.getDate() + '/' + (hoy.getMonth() + 1) + '/' + hoy.getFullYear();
+    // Inicializar Fecha
+    const fechaActual = new Date();
+    document.getElementById('docFecha').innerText = 'Fecha: ' + fechaActual.getDate() + '/' + (fechaActual.getMonth() + 1) + '/' + fechaActual.getFullYear();
 
-    // Cargar Logo
-    const logoGuardado = localStorage.getItem('logoKylianCustom') || logoBase64SVG;
-    document.getElementById('imgLogoHeader').src = logoGuardado;
+    // Cargar Logo Guardado
+    const logoSaved = localStorage.getItem('kylian_app_logo') || logoPlaceholder;
+    document.getElementById('imgLogo').src = logoSaved;
 
-    function subirLogoCustom(e) {
+    function actualizarLogo(e) {
       const file = e.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(evt) {
           const b64 = evt.target.result;
-          document.getElementById('imgLogoHeader').src = b64;
-          localStorage.setItem('logoKylianCustom', b64);
+          document.getElementById('imgLogo').src = b64;
+          localStorage.setItem('kylian_app_logo', b64);
         };
         reader.readAsDataURL(file);
       }
     }
 
-    function agregarFilaControl(desc = '', cant = 1, pu = 0) {
-      const container = document.getElementById('itemsContainer');
+    function agregarItem(desc = '', cant = 1, pu = 0) {
+      const container = document.getElementById('ctrlItemsList');
       const div = document.createElement('div');
-      div.className = 'item-control-row';
+      div.className = 'item-ctrl-row';
       div.innerHTML = `
-        <input type="text" class="desc" value="${desc}" placeholder="Descripción" oninput="renderizarDoc()">
-        <input type="number" class="cant" value="${cant}" min="1" oninput="renderizarDoc()">
-        <input type="number" class="pu" value="${pu}" step="0.1" oninput="renderizarDoc()">
-        <button class="btn-del" onclick="eliminarFilaControl(this)">X</button>
+        <input type="text" class="desc" value="${desc}" placeholder="Descripción" oninput="actualizarDocumento()">
+        <input type="number" class="cant" value="${cant}" min="1" oninput="actualizarDocumento()">
+        <input type="number" class="pu" value="${pu}" step="0.1" oninput="actualizarDocumento()">
+        <button class="btn-remove" onclick="eliminarItem(this)">X</button>
       `;
       container.appendChild(div);
-      renderizarDoc();
+      actualizarDocumento();
     }
 
-    function eliminarFilaControl(btn) {
-      btn.closest('.item-control-row').remove();
-      renderizarDoc();
+    function eliminarItem(btn) {
+      btn.closest('.item-ctrl-row').remove();
+      actualizarDocumento();
     }
 
-    function renderizarDoc() {
+    function actualizarDocumento() {
       // 1. Datos Generales
-      const num = document.getElementById('inNumero').value || 20;
-      document.getElementById('lblNumeroDoc').innerText = 'N° ' + String(num).padStart(3, '0');
-      document.getElementById('lblClienteDoc').innerText = document.getElementById('inCliente').value;
-      document.getElementById('lblContactoDoc').innerText = document.getElementById('inContacto').value;
-      document.getElementById('lblTelefonoDoc').innerText = document.getElementById('inTelefono').value;
+      const num = document.getElementById('ctrlNumero').value || 20;
+      document.getElementById('docNumero').innerText = 'N° ' + String(num).padStart(3, '0');
+      document.getElementById('docCliente').innerText = document.getElementById('ctrlCliente').value;
+      document.getElementById('docContacto').innerText = document.getElementById('ctrlContacto').value;
+      document.getElementById('docTelefono').innerText = document.getElementById('ctrlTelefono').value;
 
-      // 2. Filas de la Tabla y Cálculos
-      const tbody = document.getElementById('tbodyServiciosDoc');
+      // 2. Tabla y Cálculos
+      const tbody = document.getElementById('docTbody');
       tbody.innerHTML = '';
 
-      const descs = document.querySelectorAll('.item-control-row .desc');
-      const cants = document.querySelectorAll('.item-control-row .cant');
-      const pus = document.querySelectorAll('.item-control-row .pu');
+      const descs = document.querySelectorAll('.item-ctrl-row .desc');
+      const cants = document.querySelectorAll('.item-ctrl-row .cant');
+      const pus = document.querySelectorAll('.item-ctrl-row .pu');
 
       let subtotalGeneral = 0;
 
       for (let i = 0; i < descs.length; i++) {
-        const d = descs[i].value || 'Servicio / Repuesto';
+        const d = descs[i].value || 'Servicio';
         const c = parseFloat(cants[i].value) || 0;
         const p = parseFloat(pus[i].value) || 0;
         const totalFila = c * p;
@@ -475,38 +476,37 @@
         tbody.appendChild(tr);
       }
 
-      // 3. Totales (Subtotal, IGV 18%, Total)
+      // 3. Totales (Subtotal + IGV + Total)
       const igv = subtotalGeneral * 0.18;
-      const totalGeneral = subtotalGeneral + igv;
+      const total = subtotalGeneral + igv;
 
-      document.getElementById('lblSubtotal').innerText = subtotalGeneral.toFixed(2);
-      document.getElementById('lblIgv').innerText = igv.toFixed(2);
-      document.getElementById('lblTotal').innerText = totalGeneral.toFixed(2);
+      document.getElementById('docSubtotal').innerText = subtotalGeneral.toFixed(2);
+      document.getElementById('docIgv').innerText = igv.toFixed(2);
+      document.getElementById('docTotal').innerText = total.toFixed(2);
     }
 
-    function exportarPDF() {
-      const element = document.getElementById('documentoCotizacion');
-      const numDoc = String(document.getElementById('inNumero').value).padStart(3, '0');
+    function descargarPDF() {
+      const element = document.getElementById('hojaCotizacion');
+      const numDoc = String(document.getElementById('ctrlNumero').value).padStart(3, '0');
 
       const opt = {
-        margin: [10, 10, 10, 10],
-        filename: `Cotizacion_Kylian_N_${numDoc}.pdf`,
+        margin: [8, 8, 8, 8],
+        filename: `Cotizacion_N_${numDoc}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       html2pdf().set(opt).from(element).save().then(() => {
-        // Avanzar el número correlativo para la siguiente cotización
-        let actual = parseInt(document.getElementById('inNumero').value) || 20;
-        document.getElementById('inNumero').value = actual + 1;
-        renderizarDoc();
+        let actual = parseInt(document.getElementById('ctrlNumero').value) || 20;
+        document.getElementById('ctrlNumero').value = actual + 1;
+        actualizarDocumento();
       });
     }
 
-    // Ítems iniciales de prueba
-    agregarFilaControl('Mantenimiento de Frenos y Cambio de Pastillas', 1, 250);
-    agregarFilaControl('Cambio de Aceite Sintético y Filtros', 1, 180);
+    // Inicializar ítems
+    agregarItem('Mantenimiento preventivo y limpieza', 1, 200);
+    agregarItem('Cambio de aceite sintético 5W-30', 1, 150);
   </script>
 </body>
 </html>
